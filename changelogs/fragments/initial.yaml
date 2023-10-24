@@ -1,0 +1,4 @@
+---
+release_summary: Initial release
+major_changes:
+  - Deploy the RPM-based Ansible Automation Platform installer via RHEL-based virtual machines on AWS.
