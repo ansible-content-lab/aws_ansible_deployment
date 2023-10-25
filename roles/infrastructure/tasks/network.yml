@@ -1,0 +1,15 @@
+---
+- name: Get subnet info
+  amazon.aws.ec2_vpc_subnet_info:
+    region: "{{ infrastructure_aws_region }}"
+    filters:
+      "tag:purpose": ansible-automation-platform
+      "tag:environment": aap
+      "tag:deployment": "aap-infrastructure-{{ infrastructure_facts.ansible_facts.deployment_id }}"
+  register: infrastructure_aws_subnet
+  when: infrastructure_aws_subnet_id is not defined
+
+- name: Save subnet id
+  ansible.builtin.set_fact:
+    infrastructure_aws_subnet_id: "{{ infrastructure_aws_subnet.subnets | map(attribute='id') | list | last }}"
+  when: infrastructure_aws_subnet_id is not defined

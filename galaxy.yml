@@ -38,7 +38,10 @@ tags:
 # collection label 'namespace.name'. The value is a version range
 # L(specifiers,https://python-semanticversion.readthedocs.io/en/latest/#requirement-specification). Multiple version
 # range specifiers can be set and are separated by ','
-dependencies: {}
+dependencies:
+  amazon.aws: '>=6.5.0'
+  community.aws: '>=6.3.0'
+  community.general: '>=7.5.0' 
 
 # The URL of the originating SCM repository
 repository: https://github.com/ansible-content-lab/aws.deployment
@@ -56,7 +59,11 @@ issues: https://github.com/ansible-content-lab/aws.deployment/issues
 # artifact. A pattern is matched from the relative path of the file or directory of the collection directory. This
 # uses 'fnmatch' to match the files or directories. Some directories and files like 'galaxy.yml', '*.pyc', '*.retry',
 # and '.git' are always filtered. Mutually exclusive with 'manifest'
-build_ignore: []
+build_ignore:
+  - '.tox'
+  - '.git'
+  - '.github'
+  - '.gitignore'
 
 # A dict controlling use of manifest directives used in building the collection artifact. The key 'directives' is a
 # list of MANIFEST.in style

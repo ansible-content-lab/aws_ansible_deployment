@@ -1,0 +1,84 @@
+---
+- name: Check if the controller VMs are already provisioned
+  amazon.aws.ec2_instance_info:
+    filters:
+      "tag:component": ansible-automation-controller
+      "tag:environment": ansible-automation-platform
+      "tag:deployment": "aap-infrastructure-{{ infrastructure_facts.ansible_facts.deployment_id }}"
+      instance-state-name:
+        - pending
+        - running
+        - shutting-down
+        - stopping
+        - stopped
+    region: "{{ infrastructure_aws_region }}"
+  register: infrastructure_existing_vm
+
+- name: Output number of existing VMs
+  ansible.builtin.debug:
+    msg: "Number of existing Controller VMs: {{ infrastructure_existing_vm.instances | length }}"
+  when: 
+    - infrastructure_existing_vm.instances is defined
+
+- name: Output the details of existing VMs
+  ansible.builtin.debug:
+    msg:
+      - "Instance ID: {{ item.instance_id }}"
+      - "Public IP: {{ item.public_ip_address }}"
+      - "Private IP: {{ item.private_ip_address }}"
+  loop: "{{ infrastructure_existing_vm.instances }}"
+  when: 
+    - infrastructure_existing_vm.instances is defined
+    - infrastructure_existing_vm.instances | length > 0
+
+- name: Set number of Controller VMs to create
+  ansible.builtin.set_fact:
+    infrastructure_controller_vms_to_create: "{{ infrastructure_controller_instances - (infrastructure_existing_vm.instances | default([]) | length) }}"
+
+- name: Output number of VMs to create
+  ansible.builtin.debug:
+    msg: "Creating Controller VMs: {{ infrastructure_controller_vms_to_create }}"
+
+# - name: Create Instance
+#   when: infrastructure_existing_vm.instances | length == 0
+#   block:
+    # - name: Create instance
+    #   amazon.aws.ec2_instance:
+    #     filters:
+    #       "tag:Name": "{{ infrastructure_vm_name }}"
+    #     network:
+    #       assign_public_ip: true
+    #       delete_on_termination: true
+    #     tenancy: "{{ infrastructure_aws_tenancy }}"
+    #     key_name: "{{ infrastructure_aws_keypair_name }}"
+    #     instance_type: "{{ infrastructure_aws_instance_size }}"
+    #     image_id: "{{ infrastructure_aws_instance_ami | trim }}"
+    #     region: "{{ infrastructure_aws_region }}"
+    #     security_group: "{{ infrastructure_aws_securitygroup_name }}"
+    #     tags:
+    #       Name: "{{ infrastructure_vm_name }}"
+    #       blueprint: "{{ infrastructure_vm_blueprint }}"
+    #       environment: "{{ infrastructure_vm_environment }}"
+    #       deployment: "{{ infrastructure_vm_deployment }}"
+    #       owner: "{{ infrastructure_vm_owner }}"
+    #       purpose: "{{ infrastructure_vm_purpose }}"
+    #       ansible-role: infrastructure
+    #       ansible-collection: aws.infrastructure_config_demos
+    #     wait: "{{ infrastructure_aws_ec2_wait }}"
+    #     vpc_subnet_id: "{{ infrastructure_aws_subnet_id }}"
+    #     user_data: "{{ lookup('template', infrastructure_aws_userdata_template + '.j2', template_vars=dict(vm_name=infrastructure_vm_name)) }}"
+    #   register: infrastructure_aws_ec2_instance
+
+    # - name: Output the IP of new VM
+    #   ansible.builtin.debug:
+    #     msg:
+    #       - "Public IP for new instance: {{ infrastructure_aws_ec2_instance.instances[0].public_ip_address | default('') }}"
+    #       - "Private IP for new instance: {{ infrastructure_aws_ec2_instance.instances[0].private_ip_address | default('') }}"
+    #   when: infrastructure_aws_ec2_instance.instances is defined and infrastructure_aws_ec2_instance.instances | length > 0
+
+    # - name: Set stats for Controller of new VM
+    #   ansible.builtin.set_stats:
+    #     data:
+    #       priv_network_private_ip: "{{ infrastructure_aws_ec2_instance.instances[0].private_ip_address | default('') }}"
+    #       public_ip: "{{ infrastructure_aws_ec2_instance.instances[0].public_ip_address | default('') }}"
+    #   when: infrastructure_aws_ec2_instance.instances is defined and infrastructure_aws_ec2_instance.instances | length > 0
