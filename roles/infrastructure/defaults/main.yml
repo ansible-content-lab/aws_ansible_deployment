@@ -12,9 +12,13 @@ infrastructure_ami_filter:
   owner-id: "309956199498"
   name: "RHEL-9.2.*_HVM-*"
 infrastructure_controller_instances: 1
-infrastructure_controller_shape: M5.Large
+infrastructure_controller_shape: m5a.xlarge
 infrastructure_controller_ami: ami-0993e213bcd3d244c
+infrastructure_assign_public_ip: true
+infrastructure_delete_on_termination: true
 
 infrastructure_hub_instances: 1
+infrastructure_hub_shape: m5a.xlarge
+
 infrastructure_eda_instances: 0
-infrastructure_hub_shape: M5.Large
+infrastructure_eda_shape: m5a.xlarge

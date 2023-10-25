@@ -35,7 +35,7 @@
     - eda
 
 - name: Configure Network
-  ansible.builtin.import_tasks: "network.yml"
+  ansible.builtin.import_tasks: network.yml
   tags:
     - network
 
@@ -52,11 +52,11 @@
     - network
 
 - name: Configure Amazon Machine Images (AMI)
-  ansible.builtin.import_tasks: "ami.yml"
+  ansible.builtin.import_tasks: ami.yml
   tags:
     - ami
 
 - name: Create Controller VMs
-  ansible.builtin.import_tasks: "controller.yml"
+  ansible.builtin.import_tasks: controller.yml
   tags:
     - controller
