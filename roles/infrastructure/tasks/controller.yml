@@ -5,6 +5,7 @@
       "tag:purpose": ansible-automation-platform
       "tag:environment": aap
       "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
+      "tag:app": controller
       "instance-state-name":
         - pending
         - running
@@ -53,6 +54,7 @@
         host_groups:
           - aap
           - controller
+        app_tag: controller
       tags:
         - controller
   rescue:

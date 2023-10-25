@@ -60,3 +60,13 @@
   ansible.builtin.import_tasks: controller.yml
   tags:
     - controller
+
+- name: Create Hub VMs
+  ansible.builtin.import_tasks: hub.yml
+  tags:
+    - hub
+
+- name: Create EDA VMs
+  ansible.builtin.import_tasks: eda.yml
+  tags:
+    - eda

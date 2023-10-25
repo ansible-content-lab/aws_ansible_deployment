@@ -1,0 +1,63 @@
+---
+- name: Check if the hub VMs are already provisioned
+  amazon.aws.ec2_instance_info:
+    filters:
+      "tag:purpose": ansible-automation-platform
+      "tag:environment": aap
+      "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
+      "tag:app": hub
+      "instance-state-name":
+        - pending
+        - running
+        - shutting-down
+        - stopping
+        - stopped
+    region: "{{ infrastructure_aws_region }}"
+  register: infrastructure_existing_vm
+  tags:
+    - hub
+
+- name: Output number of existing VMs
+  ansible.builtin.debug:
+    var: infrastructure_existing_vm
+
+- name: Output number of existing VMs
+  ansible.builtin.debug:
+    msg: "Number of existing hub VMs: {{ infrastructure_existing_vm.instances | length }}"
+  when: 
+    - infrastructure_existing_vm.instances is defined
+  tags:
+    - hub
+
+- name: Set number of hub VMs to create
+  ansible.builtin.set_fact:
+    infrastructure_hub_vms_to_create: "{{ infrastructure_hub_instances - (infrastructure_existing_vm.instances | default([]) | length) }}"
+  tags:
+    - hub
+
+- name: Output number of VMs to create
+  ansible.builtin.debug:
+    msg: "Creating hub VMs: {{ infrastructure_hub_vms_to_create }}"
+  tags:
+    - hub
+
+- name: Create VMs
+  when: infrastructure_hub_vms_to_create | int > 0
+  block:
+    - name: Include create vm task
+      ansible.builtin.include_tasks: vm.yml
+      loop: "{{ query('sequence', 'start=1 end=' + (infrastructure_hub_vms_to_create | string)) }}"
+      vars:
+        instance_type: "{{ infrastructure_hub_shape }}"
+        ami: "{{ infrastructure_hub_ami }}"
+        vm_name_prefix: hub-
+        host_groups:
+          - aap
+          - hub
+        app_tag: hub
+      tags:
+        - hub
+  rescue:
+    - name: Create VM error
+      ansible.builtin.debug:
+        msg: 'No VMs to create'

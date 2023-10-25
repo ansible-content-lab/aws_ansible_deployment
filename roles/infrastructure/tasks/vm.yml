@@ -22,6 +22,7 @@
       purpose: ansible-automation-platform
       environment: aap
       deployment: "aap-infrastructure-{{ deployment_id }}"
+      app: "{{ app_tag | default('') }}"
     wait: true
     vpc_subnet_id: "{{ infrastructure_aws_subnet_id }}"
   register: infrastructure_aws_ec2_instance
