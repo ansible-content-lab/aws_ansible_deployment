@@ -4,7 +4,7 @@
     filters:
       "tag:component": ansible-automation-controller
       "tag:environment": ansible-automation-platform
-      "tag:deployment": "aap-infrastructure-{{ infrastructure_facts.ansible_facts.deployment_id }}"
+      "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
       instance-state-name:
         - pending
         - running
@@ -13,12 +13,16 @@
         - stopped
     region: "{{ infrastructure_aws_region }}"
   register: infrastructure_existing_vm
+  tags:
+    - controller
 
 - name: Output number of existing VMs
   ansible.builtin.debug:
     msg: "Number of existing Controller VMs: {{ infrastructure_existing_vm.instances | length }}"
   when: 
     - infrastructure_existing_vm.instances is defined
+  tags:
+    - controller
 
 - name: Output the details of existing VMs
   ansible.builtin.debug:
@@ -30,14 +34,20 @@
   when: 
     - infrastructure_existing_vm.instances is defined
     - infrastructure_existing_vm.instances | length > 0
+  tags:
+    - controller
 
 - name: Set number of Controller VMs to create
   ansible.builtin.set_fact:
     infrastructure_controller_vms_to_create: "{{ infrastructure_controller_instances - (infrastructure_existing_vm.instances | default([]) | length) }}"
+  tags:
+    - controller
 
 - name: Output number of VMs to create
   ansible.builtin.debug:
     msg: "Creating Controller VMs: {{ infrastructure_controller_vms_to_create }}"
+  tags:
+    - controller
 
 # - name: Create Instance
 #   when: infrastructure_existing_vm.instances | length == 0

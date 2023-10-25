@@ -1,5 +1,7 @@
 ---
 - name: Find RHEL AMI for machines that do not explicitly define the AMI
+  tags:
+    - ami
   block:
     - name: Find RHEL AMI
       amazon.aws.ec2_ami_info:
@@ -31,16 +33,22 @@
   ansible.builtin.set_fact:
     infrastructure_controller_ami: "{{ infrastructure_vm_ami }}"
   when: infrastructure_controller_ami is not defined
+  tags:
+    - ami
 
 - name: Assign RHEL AMI as Hub image
   ansible.builtin.set_fact:
     infrastructure_hub_ami: "{{ infrastructure_vm_ami }}"
   when: infrastructure_hub_ami is not defined
+  tags:
+    - ami
 
 - name: Assign RHEL AMI as EDA image
   ansible.builtin.set_fact:
     infrastructure_eda_ami: "{{ infrastructure_vm_ami }}"
   when: infrastructure_eda_ami is not defined
+  tags:
+    - ami
 
 - name: Set Stats AMI
   ansible.builtin.set_stats:
@@ -50,7 +58,11 @@
       eda_ami: "{{ infrastructure_eda_ami }}"
     per_host: false
   register: ami_stats
+  tags:
+    - ami
 
 - name: Print AMI Stats
   ansible.builtin.debug:
     var: ami_stats
+  tags:
+    - ami

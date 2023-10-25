@@ -1,12 +1,16 @@
 ---
 # Infrastructure Defaults
 infrastructure_aws_region: us-east-1
+
+# Networking
+infrastructure_vpc_cidr: 172.16.0.0/24
+infrastructure_subnet_cidr: 172.16.0.0/24
+
+# Compute
 infrastructure_ami_filter:
   architecture: x86_64
   owner-id: "309956199498"
   name: "RHEL-9.2.*_HVM-*"
-
-# Compute Setup Variables
 infrastructure_controller_instances: 1
 infrastructure_controller_shape: M5.Large
 infrastructure_controller_ami: ami-0993e213bcd3d244c

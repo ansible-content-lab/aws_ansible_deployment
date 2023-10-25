@@ -5,19 +5,58 @@
   register: infrastructure_facts
   when:
     - deployment_id is not defined
+  tags:
+    - ami
+    - network
+    - controller
+    - hub
+    - eda
 
 - name: Set deployment stat
   ansible.builtin.set_stats:
     data: 
       deployment_id: "{{ deployment_id }}"
     per_host: false
+  tags:
+    - ami
+    - network
+    - controller
+    - hub
+    - eda
 
 - name: Print deployment ID
   ansible.builtin.debug:
     msg: "Deployment ID: {{ deployment_id }}"
+  tags:
+    - ami
+    - network
+    - controller
+    - hub
+    - eda
+
+- name: Configure Network
+  ansible.builtin.import_tasks: "network.yml"
+  tags:
+    - network
+
+- name: Check Network configuration
+  ansible.builtin.assert:
+    that:
+      - infrastructure_aws_vpc_id is defined and (infrastructure_aws_vpc_id | length > 0)
+      - infrastructure_aws_subnet_id is defined and (infrastructure_aws_subnet_id | length > 0)
+      - infrastructure_aws_igw_id is defined and (infrastructure_aws_igw_id | length > 0)
+      - infrastructure_aws_security_group_id is defined and (infrastructure_aws_security_group_id | length > 0)
+      - infrastructure_aws_route_table_id is defined and (infrastructure_aws_route_table_id | length > 0)
+    msg: Network variables are either missing, or an existing deployment could not be found. Set the proper network variables before proceeding.
+  tags:
+    - network
 
 - name: Configure Amazon Machine Images (AMI)
   ansible.builtin.import_tasks: "ami.yml"
+  tags:
+    - ami
 
 - name: Create Controller VMs
   ansible.builtin.import_tasks: "controller.yml"
+  tags:
+    - controller
