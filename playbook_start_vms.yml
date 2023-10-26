@@ -12,5 +12,5 @@
           "tag:purpose": ansible-automation-platform
           "tag:environment": aap
           "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
-        region: "{{ infrastructure_aws_region }}"
+        region: "{{ infrastructure_region }}"
       register: aap_vms

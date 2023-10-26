@@ -1,1 +1,44 @@
 ---
+- name: Create subnet group
+  amazon.aws.rds_subnet_group:
+    region: "{{ infrastructure_region }}"
+    state: present
+    name: "aap-infrastructure-{{ deployment_id }}-subnet-group"
+    description: Ansible Automation Platform Subnet Group
+    subnets: "{{ infrastructure_subnet_ids }}"
+    tags:
+      Name: "aap-infrastructure-{{ deployment_id }}-subnet-group"
+      purpose: ansible-automation-platform
+      environment: aap
+      deployment: "aap-infrastructure-{{ deployment_id }}"
+  register: infrastructure_db_subnet_group
+  tags:
+    - database
+
+- name: Create RDS instance
+  amazon.aws.rds_instance:
+    region: "{{ infrastructure_region }}"
+    id: "aap-infrastructure-{{ deployment_id }}-db"
+    state: present
+    engine: postgres
+    engine_version: "{{ infrastructure_db_engine_version }}"
+    allow_major_version_upgrade: "{{ infrastructure_db_allow_major_version_upgrade }}"
+    auto_minor_version_upgrade: "{{ infrastructure_db_auto_minor_version_upgrade }}"
+    multi_az: "{{ infrastructure_db_multi_az }}"
+    storage_encrypted: "{{ infrastructure_db_storage_encrypted }}"
+    db_instance_class: "{{ infrastructure_db_db_instance_class }}"
+    username: "{{ infrastructure_db_username }}"
+    password: "{{ infrastructure_db_password }}"
+    storage_type: "{{ infrastructure_db_storage_type }}"
+    iops: "{{ infrastructure_db_storage_iops | default(None) }}"
+    allocated_storage: "{{ infrastructure_db_allocated_storage }}"
+    db_security_groups: "{{ infrastructure_db_security_groups }}"
+    db_subnet_group_name: "{{ infrastructure_db_subnet_group.subnet_group.name }}"
+    tags:
+      Name: "aap-infrastructure-{{ deployment_id }}-db"
+      purpose: ansible-automation-platform
+      environment: aap
+      deployment: "aap-infrastructure-{{ deployment_id }}"
+  tags:
+    - database
+  register: infrastructure_db

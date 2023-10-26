@@ -15,4 +15,4 @@
           "instance-state-name":
             - pending
             - running
-        region: "{{ infrastructure_aws_region }}"
+        region: "{{ infrastructure_region }}"

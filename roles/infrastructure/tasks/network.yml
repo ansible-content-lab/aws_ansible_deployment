@@ -1,227 +1,88 @@
 ---
-- name: Check for existing VPC
-  when: infrastructure_aws_vpc_id is not defined
-  block:
-    - name: Get VPC info
-      amazon.aws.ec2_vpc_net_info:
-        region: "{{ infrastructure_aws_region }}"
-        filters:
-          "tag:purpose": ansible-automation-platform
-          "tag:environment": aap
-          "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
-      register: infrastructure_aws_vpc
-      tags:
-        - network
-
-    - name: Save VPC id
-      ansible.builtin.set_fact:
-        infrastructure_aws_vpc_id: "{{ infrastructure_aws_vpc.vpcs | map(attribute='id') | list | last }}"
-      when:
-        - infrastructure_aws_vpc is defined
-        - infrastructure_aws_vpc.vpcs | length > 0
-      tags:
-        - network
-
-    - name: Print VPC details
-      ansible.builtin.debug:
-        var: infrastructure_aws_vpc_id
-      when: infrastructure_aws_vpc_id is defined
-      tags:
-        - network
-
-- name: Create new VPC
-  when: infrastructure_aws_vpc_id is not defined
+- name: Create VPC
   block:
     - name: Create VPC
       amazon.aws.ec2_vpc_net:
         name: "aap-infrastructure-{{ deployment_id }}-vpc"
         cidr_block: "{{ infrastructure_vpc_cidr }}"
         purge_tags: false
-        region: "{{ infrastructure_aws_region }}"
+        region: "{{ infrastructure_region }}"
         state: present
         tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-vpc"
           purpose: ansible-automation-platform
           environment: aap
           deployment: "aap-infrastructure-{{ deployment_id }}"
-      register: infrastructure_aws_vpc
+      register: infrastructure_vpc
       tags:
         - network
 
     - name: Save VPC id
       ansible.builtin.set_fact:
-        infrastructure_aws_vpc_id: "{{ infrastructure_aws_vpc.vpc.id }}"
-      when: infrastructure_aws_vpc is defined
+        infrastructure_vpc_id: "{{ infrastructure_vpc.vpc.id }}"
+      when: infrastructure_vpc is defined
       tags:
         - network
 
-    - name: Print VPC details
-      ansible.builtin.debug:
-        var: infrastructure_aws_vpc_id
-      when: infrastructure_aws_vpc_id is defined
-      tags:
-        - network
-
-- name: Check for existing subnet
-  when: infrastructure_aws_subnet_id is not defined
+- name: Create subnets
   block:
-    - name: Get subnet info
-      amazon.aws.ec2_vpc_subnet_info:
-        region: "{{ infrastructure_aws_region }}"
-        filters:
-          "tag:purpose": ansible-automation-platform
-          "tag:environment": aap
-          "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
-      register: infrastructure_aws_subnet
-      tags:
-        - network
-
-    - name: Save subnet id
-      ansible.builtin.set_fact:
-        infrastructure_aws_subnet_id: "{{ infrastructure_aws_subnet.subnets | map(attribute='id') | list | last }}"
-      when:
-        - infrastructure_aws_subnet is defined
-        - infrastructure_aws_subnet.subnets | length > 0
-      tags:
-        - network
-
-    - name: Print Subnet details
-      ansible.builtin.debug:
-        var: infrastructure_aws_subnet_id
-      when: infrastructure_aws_subnet_id is defined
-      tags:
-        - network
-
-- name: Create new subnet
-  when: infrastructure_aws_subnet_id is not defined
-  block:
-    - name: Create subnet
+    - name: Create subnets
       amazon.aws.ec2_vpc_subnet:
-        vpc_id: "{{ infrastructure_aws_vpc_id }}"
-        cidr: "{{ infrastructure_subnet_cidr }}"
-        region: "{{ infrastructure_aws_region }}"
+        vpc_id: "{{ infrastructure_vpc_id }}"
+        cidr: "{{ item.cidr }}"
+        region: "{{ infrastructure_region }}"
+        az: "{{ item.az }}"
         state: present
         tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-subnet-{{ item.name }}"
           purpose: ansible-automation-platform
           environment: aap
           deployment: "aap-infrastructure-{{ deployment_id }}"
-      register: infrastructure_aws_subnet
+      loop: "{{ infrastructure_vpc_subnets }}"
+      register: infrastructure_subnets
       tags:
         - network
 
-    - name: Save subnet id
+    - name: Save subnet ids
       ansible.builtin.set_fact:
-        infrastructure_aws_subnet_id: "{{ infrastructure_aws_subnet.subnet.id }}"
-      when: infrastructure_aws_subnet is defined
-      tags:
-        - network
-
-    - name: Print subnet details
-      ansible.builtin.debug:
-        var: infrastructure_aws_subnet_id
-      when: infrastructure_aws_subnet_id is defined
-      tags:
-        - network
-
-- name: Check for existing Internet Gateway
-  when: infrastructure_aws_igw_id is not defined
-  block:
-    - name: Get igw info
-      amazon.aws.ec2_vpc_igw_info:
-        region: "{{ infrastructure_aws_region }}"
-        filters:
-          "tag:purpose": ansible-automation-platform
-          "tag:environment": aap
-          "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
-      register: infrastructure_aws_igw
-      tags:
-        - network
-
-    - name: Save subnet id
-      ansible.builtin.set_fact:
-        infrastructure_aws_igw_id: "{{ infrastructure_aws_igw.internet_gateways | map(attribute='internet_gateway_id') | list | last }}"
-      when:
-        - infrastructure_aws_igw is defined
-        - infrastructure_aws_igw.internet_gateways | length > 0
-      tags:
-        - network
-
-    - name: Print Subnet details
-      ansible.builtin.debug:
-        var: infrastructure_aws_igw_id
-      when: infrastructure_aws_igw_id is defined
+        infrastructure_subnet_ids: "{{ infrastructure_subnets.results | map(attribute='subnet.id') | list }}"
+      when: infrastructure_subnets is defined
       tags:
         - network
 
 - name: Create new Internet Gateway
-  when: infrastructure_aws_igw_id is not defined
+  when: infrastructure_igw_id is not defined
   block:
     - name: Create igw
       amazon.aws.ec2_vpc_igw:
-        vpc_id: "{{ infrastructure_aws_vpc_id }}"
-        region: "{{ infrastructure_aws_region }}"
+        vpc_id: "{{ infrastructure_vpc_id }}"
+        region: "{{ infrastructure_region }}"
         state: present
         tags:
           Name: "aap-infrastructure-{{ deployment_id }}-igw"
           purpose: ansible-automation-platform
           environment: aap
           deployment: "aap-infrastructure-{{ deployment_id }}"
-      register: infrastructure_aws_igw
+      register: infrastructure_igw
       tags:
         - network
 
     - name: Save igw
       ansible.builtin.set_fact:
-        infrastructure_aws_igw_id: "{{ infrastructure_aws_igw.gateway_id }}"
-      when: infrastructure_aws_igw is defined
-      tags:
-        - network
-
-    - name: Print igw
-      ansible.builtin.debug:
-        var: infrastructure_aws_igw_id
-      when: infrastructure_aws_igw_id is defined
-      tags:
-        - network
-
-- name: Check for existing security group
-  when: infrastructure_aws_security_group_id is not defined
-  block:
-    - name: Get security group info
-      amazon.aws.ec2_security_group_info:
-        region: "{{ infrastructure_aws_region }}"
-        filters:
-          "tag:purpose": ansible-automation-platform
-          "tag:environment": aap
-          "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
-      register: infrastructure_aws_security_group
-      tags:
-        - network
-
-    - name: Save security group id
-      ansible.builtin.set_fact:
-        infrastructure_aws_security_group_id: "{{ infrastructure_aws_security_group.security_groups | map(attribute='group_id') | list | last }}"
-      when:
-        - infrastructure_aws_security_group is defined
-        - infrastructure_aws_security_group.security_groups | length > 0
-      tags:
-        - network
-
-    - name: Print Subnet details
-      ansible.builtin.debug:
-        var: infrastructure_aws_security_group_id
-      when: infrastructure_aws_security_group_id is defined
+        infrastructure_igw_id: "{{ infrastructure_igw.gateway_id }}"
+      when: infrastructure_igw is defined
       tags:
         - network
 
 - name: Create new security group
-  when: infrastructure_aws_security_group_id is not defined
+  when: infrastructure_security_group_id is not defined
   block:
     - name: Create allow SSH security group
       amazon.aws.ec2_security_group:
         name: "aap-infrastructure-{{ deployment_id }}-sg"
         description: AAP security group
-        vpc_id: "{{ infrastructure_aws_vpc_id }}"
-        region: "{{ infrastructure_aws_region }}"
+        vpc_id: "{{ infrastructure_vpc_id }}"
+        region: "{{ infrastructure_region }}"
         rules:
           - proto: tcp
             ports:
@@ -237,85 +98,40 @@
           purpose: ansible-automation-platform
           environment: aap
           deployment: "aap-infrastructure-{{ deployment_id }}"
-      register: infrastructure_aws_security_group
+      register: infrastructure_security_group
 
     - name: Save security group id
       ansible.builtin.set_fact:
-        infrastructure_aws_security_group_id: "{{ infrastructure_aws_security_group.group_id }}"
+        infrastructure_security_group_id: "{{ infrastructure_security_group.group_id }}"
       when:
-        - infrastructure_aws_security_group is defined
-      tags:
-        - network
-
-    - name: Print security group details
-      ansible.builtin.debug:
-        var: infrastructure_aws_security_group_id
-      when: infrastructure_aws_security_group_id is defined
-      tags:
-        - network
-
-- name: Check for existing route table
-  when: infrastructure_aws_route_table_id is not defined
-  block:
-    - name: Get route table info
-      amazon.aws.ec2_vpc_route_table_info:
-        region: "{{ infrastructure_aws_region }}"
-        filters:
-          "tag:purpose": ansible-automation-platform
-          "tag:environment": aap
-          "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
-      register: infrastructure_aws_route_table
-      tags:
-        - network
-
-    - name: Save route table id
-      ansible.builtin.set_fact:
-        infrastructure_aws_route_table_id: "{{ infrastructure_aws_route_table.route_tables | map(attribute='id') | list | last }}"
-      when:
-        - infrastructure_aws_route_table is defined
-        - infrastructure_aws_route_table.route_tables | length > 0
-      tags:
-        - network
-
-    - name: Print route table details
-      ansible.builtin.debug:
-        var: infrastructure_aws_route_table_id
-      when: infrastructure_aws_route_table_id is defined
+        - infrastructure_security_group is defined
       tags:
         - network
 
 - name: Create new route table
-  when: infrastructure_aws_route_table_id is not defined
+  when: infrastructure_route_table_id is not defined
   block:
     - name: Create route table info
       amazon.aws.ec2_vpc_route_table:
-        region: "{{ infrastructure_aws_region }}"
+        region: "{{ infrastructure_region }}"
         routes:
           - dest: 0.0.0.0/0
-            gateway_id: "{{ infrastructure_aws_igw_id }}"
-        vpc_id: "{{ infrastructure_aws_vpc_id }}"
-        subnets:
-          - "{{ infrastructure_aws_subnet_id }}"
+            gateway_id: "{{ infrastructure_igw_id }}"
+        vpc_id: "{{ infrastructure_vpc_id }}"
+        subnets: "{{ infrastructure_subnet_ids }}"
         tags:
           Name: "aap-infrastructure-{{ deployment_id }}-rt"
           purpose: ansible-automation-platform
           environment: aap
           deployment: "aap-infrastructure-{{ deployment_id }}"
-      register: infrastructure_aws_route_table
+      register: infrastructure_route_table
       tags:
         - network
 
     - name: Save route table id
       ansible.builtin.set_fact:
-        infrastructure_aws_route_table_id: "{{ infrastructure_aws_route_table.route_table.id }}"
+        infrastructure_route_table_id: "{{ infrastructure_route_table.route_table.id }}"
       when:
-        - infrastructure_aws_route_table is defined
-      tags:
-        - network
-
-    - name: Print route table details
-      ansible.builtin.debug:
-        var: infrastructure_aws_route_table_id
-      when: infrastructure_aws_route_table_id is defined
+        - infrastructure_route_table is defined
       tags:
         - network

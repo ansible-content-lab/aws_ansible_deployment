@@ -12,11 +12,11 @@
     network:
       assign_public_ip: "{{ infrastructure_assign_public_ip }}"
       delete_on_termination: "{{ infrastructure_delete_on_termination }}"
-    key_name: "{{ infrastructure_aws_keypair_name }}"
+    key_name: "{{ infrastructure_keypair_name }}"
     instance_type: "{{ instance_type }}"
     image_id: "{{ ami }}"
-    region: "{{ infrastructure_aws_region }}"
-    security_group: "{{ infrastructure_aws_security_group_id }}"
+    region: "{{ infrastructure_region }}"
+    security_group: "{{ infrastructure_security_group_id }}"
     tags:
       Name: "{{ vm_name }}"
       purpose: ansible-automation-platform
@@ -24,28 +24,28 @@
       deployment: "aap-infrastructure-{{ deployment_id }}"
       app: "{{ app_tag | default('') }}"
     wait: true
-    vpc_subnet_id: "{{ infrastructure_aws_subnet_id }}"
-  register: infrastructure_aws_ec2_instance
+    vpc_subnet_id: "{{ infrastructure_subnet_id }}"
+  register: infrastructure_ec2_instance
 
 - name: Output the IP of new VM
   ansible.builtin.debug:
     msg:
-      - "Public IP for {{ vm_name }}: {{ infrastructure_aws_ec2_instance.instances[0].public_ip_address | default('') }}"
-      - "Private IP for {{ vm_name }}: {{ infrastructure_aws_ec2_instance.instances[0].private_ip_address | default('') }}"
+      - "Public IP for {{ vm_name }}: {{ infrastructure_ec2_instance.instances[0].public_ip_address | default('') }}"
+      - "Private IP for {{ vm_name }}: {{ infrastructure_ec2_instance.instances[0].private_ip_address | default('') }}"
   when:
-    - infrastructure_aws_ec2_instance.instances is defined
-    - infrastructure_aws_ec2_instance.instances | length > 0
+    - infrastructure_ec2_instance.instances is defined
+    - infrastructure_ec2_instance.instances | length > 0
 
 - name: Set stats for Controller of new VM
   ansible.builtin.set_stats:
     data:
-      "{{ vm_name | replace('-','_') }}_priv_network_private_ip": "{{ infrastructure_aws_ec2_instance.instances[0].private_ip_address | default('') }}"
-      "{{ vm_name | replace('-','_') }}_public_ip": "{{ infrastructure_aws_ec2_instance.instances[0].public_ip_address | default('') }}"
+      "{{ vm_name | replace('-','_') }}_priv_network_private_ip": "{{ infrastructure_ec2_instance.instances[0].private_ip_address | default('') }}"
+      "{{ vm_name | replace('-','_') }}_public_ip": "{{ infrastructure_ec2_instance.instances[0].public_ip_address | default('') }}"
   when:
-    - infrastructure_aws_ec2_instance.instances is defined
-    - infrastructure_aws_ec2_instance.instances | length > 0
+    - infrastructure_ec2_instance.instances is defined
+    - infrastructure_ec2_instance.instances | length > 0
 
 - name: Add hosts to group
   ansible.builtin.add_host:
     groups: "{{ host_groups | default(['aap']) }}"
-    name: "{{ infrastructure_aws_ec2_instance.instances[0].public_ip_address }}"
+    name: "{{ infrastructure_ec2_instance.instances[0].public_ip_address }}"

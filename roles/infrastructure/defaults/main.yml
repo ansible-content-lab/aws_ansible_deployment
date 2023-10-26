@@ -1,24 +1,51 @@
 ---
 # Infrastructure Defaults
-infrastructure_aws_region: us-east-1
+infrastructure_region: us-east-1
 
 # Networking
-infrastructure_vpc_cidr: 172.16.0.0/24
-infrastructure_subnet_cidr: 172.16.0.0/24
+infrastructure_vpc_cidr: 172.16.0.0/22
+infrastructure_vpc_subnets:
+  - name: "1"
+    cidr: 172.16.0.0/24
+    az: us-east-1a
+  - name: "2"
+    cidr: 172.16.1.0/24
+    az: us-east-1b
+  - name: "3"
+    cidr: 172.16.2.0/24
+    az: us-east-1c
+  - name: "4"
+    cidr: 172.16.3.0/24
+    az: us-east-1d
 
 # Compute
 infrastructure_ami_filter:
   architecture: x86_64
   owner-id: "309956199498"
   name: "RHEL-9.2.*_HVM-*"
+infrastructure_assign_public_ip: true
+infrastructure_delete_on_termination: true
+
 infrastructure_controller_instances: 1
 infrastructure_controller_shape: m5a.xlarge
 infrastructure_controller_ami: ami-0993e213bcd3d244c
-infrastructure_assign_public_ip: true
-infrastructure_delete_on_termination: true
 
 infrastructure_hub_instances: 1
 infrastructure_hub_shape: m5a.xlarge
 
 infrastructure_eda_instances: 0
 infrastructure_eda_shape: m5a.xlarge
+
+# Database
+infrastructure_db_engine_version: "13.12"
+infrastructure_db_allow_major_version_upgrade: false
+infrastructure_db_auto_minor_version_upgrade: true
+infrastructure_db_multi_az: false
+infrastructure_db_storage_encrypted: true
+infrastructure_db_db_instance_class: db.m5d.xlarge
+infrastructure_db_username: ansible
+infrastructure_db_password: changeme
+infrastructure_db_storage_type: io1
+infrastructure_db_storage_iops: 1500
+infrastructure_db_allocated_storage: 100
+infrastructure_db_security_groups: []

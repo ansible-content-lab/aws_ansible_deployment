@@ -45,14 +45,16 @@
 - name: Check Network configuration
   ansible.builtin.assert:
     that:
-      - infrastructure_aws_vpc_id is defined and (infrastructure_aws_vpc_id | length > 0)
-      - infrastructure_aws_subnet_id is defined and (infrastructure_aws_subnet_id | length > 0)
-      - infrastructure_aws_igw_id is defined and (infrastructure_aws_igw_id | length > 0)
-      - infrastructure_aws_security_group_id is defined and (infrastructure_aws_security_group_id | length > 0)
-      - infrastructure_aws_route_table_id is defined and (infrastructure_aws_route_table_id | length > 0)
+      - infrastructure_vpc_id is defined and (infrastructure_vpc_id | length > 0)
+      - infrastructure_subnet_ids is defined and (infrastructure_subnet_ids | length > 0)
+      - infrastructure_security_group_id is defined and (infrastructure_security_group_id | length > 0)
     msg: Network variables are either missing, or an existing deployment could not be found. Set the proper network variables before proceeding.
   tags:
     - network
+    - database
+    - controller
+    - hub
+    - eda
 
 - name: Create RDS database
   ansible.builtin.import_tasks: database.yml

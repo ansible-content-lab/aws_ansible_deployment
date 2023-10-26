@@ -5,7 +5,7 @@
   block:
     - name: Find RHEL AMI
       amazon.aws.ec2_ami_info:
-        region: "{{ infrastructure_aws_region }}"
+        region: "{{ infrastructure_region }}"
         filters: "{{ infrastructure_ami_filter }}"
       register: infrastructure_vm_amis
       when: infrastructure_vm_ami is not defined
