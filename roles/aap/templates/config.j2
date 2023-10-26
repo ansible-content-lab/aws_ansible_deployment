@@ -1,0 +1,4 @@
+Host {{ controller_hosts | join(' ') }} {{ hub_hosts | join(' ') }} {{ eda_hosts | join(' ') }}
+    User ec2-user
+    IdentityFile ~/.ssh/{{ aap_installer_ssh_key }}
+    StrictHostKeyChecking no

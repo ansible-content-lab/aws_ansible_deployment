@@ -77,7 +77,7 @@
 - name: Create new security group
   when: infrastructure_security_group_id is not defined
   block:
-    - name: Create allow SSH security group
+    - name: Create security group
       amazon.aws.ec2_security_group:
         name: "aap-infrastructure-{{ deployment_id }}-sg"
         description: AAP security group
@@ -89,16 +89,28 @@
               - 22
             cidr_ip: 0.0.0.0/0
             rule_desc: allow all on port 22
+          - proto: icmp
+            icmp_type: 3
+            icmp_code: 1
+            cidr_ip: "{{ infrastructure_vpc_cidr }}"
+            rule_desc: allow ping on local net
+          - proto: tcp
+            ports:
+              - 5432
+            cidr_ip: "{{ infrastructure_vpc_cidr }}"
+            rule_desc: allow postgresql on local net
         rules_egress:
           - proto: all
             cidr_ip: 0.0.0.0/0
-            rule_desc: allow all outbound traffic
+            rule_desc: allow all outbound
         tags:
           Name: "aap-infrastructure-{{ deployment_id }}-sg"
           purpose: ansible-automation-platform
           environment: aap
           deployment: "aap-infrastructure-{{ deployment_id }}"
       register: infrastructure_security_group
+      tags:
+        - network
 
     - name: Save security group id
       ansible.builtin.set_fact:

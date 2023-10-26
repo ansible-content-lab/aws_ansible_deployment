@@ -1,0 +1,15 @@
+---
+- name: Copy an SSH private key to the installer host to connect to other servers
+  ansible.builtin.copy:
+    remote_src: false
+    src: "{{ aap_installer_ssh_key_src }}"
+    dest: "{{ aap_installer_ssh_key_dest }}"
+    owner: ec2-user
+    group: ec2-user
+    mode: '0600'
+    force: true
+
+- name: Copy ssh config to make calling the AAP installer from this role possible
+  ansible.builtin.template:
+    src: config.j2
+    dest: "{{ aap_ssh_path }}/config"

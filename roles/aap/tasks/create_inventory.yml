@@ -1,0 +1,5 @@
+---
+- name: Copy inventory to install server
+  ansible.builtin.template:
+    src: inventory.j2
+    dest: "{{ aap_installer_inventory_path }}"

@@ -1,0 +1,12 @@
+---
+- name: Unarchive installer
+  ansible.builtin.import_tasks: unarchive_installer.yml
+
+- name: Create inventory
+  ansible.builtin.import_tasks: create_inventory.yml
+
+- name: Configure SSH
+  ansible.builtin.import_tasks: configure_ssh.yml
+
+- name: Run the AAP installer
+  ansible.builtin.import_tasks: aap_setup.yml

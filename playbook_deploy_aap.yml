@@ -18,3 +18,41 @@
       ansible.builtin.dnf:
         name: "*"
         state: latest
+
+- name: Configure hosts
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Debug hosts
+      ansible.builtin.debug:
+        var: hostvars.localhost.infrastructure_db.endpoint.address
+
+- name: Enable AAP repos
+  hosts: "{{ groups.aap | default('all') }}"
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Register subscription manager
+      community.general.redhat_subscription:
+        state: present
+        username: "{{ aap_red_hat_username }}"
+        password: "{{ aap_red_hat_password }}"
+        auto_attach: true
+    - name: Ensure rhsm is managing repos
+      ansible.builtin.command: sudo subscription-manager config --rhsm.manage_repos=1
+
+- name: Install AAP
+  hosts: "{{ groups.controller[0] | default('all') }}"
+  gather_facts: true
+  become: false
+  vars:
+    controller_hosts: "{{ groups.controller }}"
+    hub_hosts: "{{ groups.hub | default('') }}"
+    eda_hosts: "{{ groups.eda | default('') }}"
+    infrastructure_db_host: "{{ hostvars.localhost.infrastructure_db.endpoint.address }}"
+  tasks:
+    - name: Run AAP role
+      ansible.builtin.import_role:
+        name: aap
