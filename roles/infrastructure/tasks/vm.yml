@@ -24,7 +24,7 @@
       deployment: "aap-infrastructure-{{ deployment_id }}"
       app: "{{ app_tag | default('') }}"
     wait: true
-    vpc_subnet_id: "{{ infrastructure_subnet_id }}"
+    vpc_subnet_id: "{{ subnet }}"
   register: infrastructure_ec2_instance
 
 - name: Output the IP of new VM

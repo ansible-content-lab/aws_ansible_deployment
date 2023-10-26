@@ -68,6 +68,7 @@
           - aap
           - hub
         app_tag: hub
+        subnet: "{{ infrastructure_subnet_ids[1] }}"
       tags:
         - hub
   rescue:
