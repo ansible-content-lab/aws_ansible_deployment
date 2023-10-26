@@ -1,0 +1,16 @@
+---
+- name: Start AAP VMs
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Get deployment VMs based on tag filters
+      amazon.aws.ec2_instance:
+        state: running
+        filters:
+          "tag:purpose": ansible-automation-platform
+          "tag:environment": aap
+          "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
+        region: "{{ infrastructure_aws_region }}"
+      register: aap_vms

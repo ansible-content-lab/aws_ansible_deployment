@@ -1,5 +1,5 @@
 ---
-- name: Deploy Ansible Automation Platform on AWS
+- name: Deploy AWS infrastructure
   hosts: localhost
   connection: local
   gather_facts: false
@@ -7,4 +7,4 @@
   tasks:
     - name: Deploy Infrastructure
       ansible.builtin.import_role:
-        name: Infrastructure
+        name: infrastructure

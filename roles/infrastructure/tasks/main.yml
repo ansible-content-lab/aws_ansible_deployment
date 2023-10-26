@@ -8,6 +8,7 @@
   tags:
     - ami
     - network
+    - database
     - controller
     - hub
     - eda
@@ -20,6 +21,7 @@
   tags:
     - ami
     - network
+    - database
     - controller
     - hub
     - eda
@@ -30,6 +32,7 @@
   tags:
     - ami
     - network
+    - database
     - controller
     - hub
     - eda
@@ -50,6 +53,11 @@
     msg: Network variables are either missing, or an existing deployment could not be found. Set the proper network variables before proceeding.
   tags:
     - network
+
+- name: Create RDS database
+  ansible.builtin.import_tasks: database.yml
+  tags:
+    - database
 
 - name: Configure Amazon Machine Images (AMI)
   ansible.builtin.import_tasks: ami.yml
