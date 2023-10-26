@@ -1,0 +1,10 @@
+---
+profile: basic
+quiet: false
+verbosity: 1
+
+skip_list:
+  - ignore-errors
+  - package-latest
+
+offline: true

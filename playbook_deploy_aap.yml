@@ -8,3 +8,13 @@
     - name: Deploy Infrastructure
       ansible.builtin.import_role:
         name: infrastructure
+
+- name: Ensure VMs are up-to-date
+  hosts: aap
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Upgrade all packages
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
