@@ -8,4 +8,4 @@ skip_list:
   - package-latest
   - command-instead-of-shell
 
-offline: true
+offline: false
