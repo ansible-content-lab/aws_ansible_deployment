@@ -42,6 +42,8 @@
         auto_attach: true
     - name: Ensure rhsm is managing repos
       ansible.builtin.command: sudo subscription-manager config --rhsm.manage_repos=1
+      register: rhsp
+      failed_when: rhsp.rc == 1
 
 - name: Install AAP
   hosts: "{{ groups.controller[0] | default('all') }}"

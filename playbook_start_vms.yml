@@ -5,7 +5,7 @@
   gather_facts: false
   become: false
   tasks:
-    - name: Get deployment VMs based on tag filters
+    - name: Start VMs based on tag filters
       amazon.aws.ec2_instance:
         state: running
         filters:

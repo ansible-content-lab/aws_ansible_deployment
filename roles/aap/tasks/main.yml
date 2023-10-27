@@ -10,3 +10,4 @@
 
 - name: Run the AAP installer
   ansible.builtin.import_tasks: aap_setup.yml
+  when: aap_run_installer

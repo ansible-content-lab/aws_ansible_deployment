@@ -1,4 +1,16 @@
 ---
+- name: Check AAP controller configuration
+  ansible.builtin.assert:
+    that:
+      - infrastructure_controller_instances > 0
+    msg: This tool must install at least one instance of Ansible Automation Controller
+  tags:
+    - network
+    - database
+    - controller
+    - hub
+    - eda
+
 - name: Create a deployment ID
   ansible.builtin.set_fact:
     deployment_id: "{{ query('community.general.random_string', upper=false, numbers=false, special=false) | first }}"
