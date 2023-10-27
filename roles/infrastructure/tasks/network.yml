@@ -96,9 +96,13 @@
             rule_desc: allow ping on local net
           - proto: tcp
             ports:
+              - 80
+              - 443
               - 5432
+              - 8443
+              - 27199
             cidr_ip: "{{ infrastructure_vpc_cidr }}"
-            rule_desc: allow postgresql on local net
+            rule_desc: allow aap ports on local net
         rules_egress:
           - proto: all
             cidr_ip: 0.0.0.0/0
