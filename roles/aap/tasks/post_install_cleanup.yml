@@ -1,7 +1,7 @@
 ---
 - name: Remove installer
   ansible.builtin.file:
-    path: "{{ aap_installer_unarchive_path }}"
+    path: "{{ aap_installer_installer_path }}"
     state: absent
 
 - name: Remove SSH key

@@ -36,8 +36,10 @@
 
 - name: Add public IP host to installer
   when: |
-    groups.installer is not defined
-    or groups.installer | length == 0
+    (infrastructure_existing_vm is defined
+    and infrastructure_existing_vm.instances | length > 0)
+    and (groups.installer is not defined
+    or groups.installer | length == 0)
   ansible.builtin.add_host:
     groups:
      - installer

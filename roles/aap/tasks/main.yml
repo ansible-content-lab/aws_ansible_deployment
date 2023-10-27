@@ -13,7 +13,8 @@
   when: aap_run_installer
 
 - name: Run the AAP installer
-  ansible.builtin.import_tasks: aap_setup.yml
+  ansible.builtin.import_tasks: post_install_cleanup.yml
   when:
     - aap_run_installer
     - aap_remove_installer_after_install
+    - install.rc != 1
