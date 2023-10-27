@@ -11,7 +11,7 @@
       purpose: ansible-automation-platform
       environment: aap
       deployment: "aap-infrastructure-{{ deployment_id }}"
-  register: infrastructure_controller_db_subnet_group
+  register: infrastructure_db_subnet_group
   tags:
     - database
 
@@ -35,7 +35,7 @@
     allocated_storage: "{{ infrastructure_controller_db_allocated_storage }}"
     vpc_security_group_ids: 
       - "{{ infrastructure_security_group.group_id }}"
-    db_subnet_group_name: "{{ infrastructure_controller_db_subnet_group.subnet_group.name }}"
+    db_subnet_group_name: "{{ infrastructure_db_subnet_group.subnet_group.name }}"
     tags:
       Name: "aap-infrastructure-{{ deployment_id }}-db"
       purpose: ansible-automation-platform
@@ -59,14 +59,14 @@
     multi_az: "{{ infrastructure_hub_db_multi_az }}"
     storage_encrypted: "{{ infrastructure_hub_db_storage_encrypted }}"
     db_instance_class: "{{ infrastructure_hub_db_db_instance_class }}"
-    username: "{{ infrastructure_hub_db_username }}"
-    password: "{{ infrastructure_hub_db_password }}"
+    username: "{{ infrastructure_db_username }}"
+    password: "{{ infrastructure_db_password }}"
     storage_type: "{{ infrastructure_hub_db_storage_type }}"
     iops: "{{ infrastructure_hub_db_storage_iops | default(None) }}"
     allocated_storage: "{{ infrastructure_hub_db_allocated_storage }}"
     vpc_security_group_ids: 
       - "{{ infrastructure_security_group.group_id }}"
-    db_subnet_group_name: "{{ infrastructure_hub_db_subnet_group.subnet_group.name }}"
+    db_subnet_group_name: "{{ infrastructure_db_subnet_group.subnet_group.name }}"
     tags:
       Name: "aap-infrastructure-{{ deployment_id }}-hub-db"
       purpose: ansible-automation-platform
@@ -90,14 +90,14 @@
     multi_az: "{{ infrastructure_eda_db_multi_az }}"
     storage_encrypted: "{{ infrastructure_eda_db_storage_encrypted }}"
     db_instance_class: "{{ infrastructure_eda_db_db_instance_class }}"
-    username: "{{ infrastructure_eda_db_username }}"
-    password: "{{ infrastructure_eda_db_password }}"
+    username: "{{ infrastructure_db_username }}"
+    password: "{{ infrastructure_db_password }}"
     storage_type: "{{ infrastructure_eda_db_storage_type }}"
     iops: "{{ infrastructure_eda_db_storage_iops | default(None) }}"
     allocated_storage: "{{ infrastructure_eda_db_allocated_storage }}"
     vpc_security_group_ids: 
       - "{{ infrastructure_security_group.group_id }}"
-    db_subnet_group_name: "{{ infrastructure_eda_db_subnet_group.subnet_group.name }}"
+    db_subnet_group_name: "{{ infrastructure_db_subnet_group.subnet_group.name }}"
     tags:
       Name: "aap-infrastructure-{{ deployment_id }}-hub-db"
       purpose: ansible-automation-platform

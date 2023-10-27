@@ -28,7 +28,6 @@ infrastructure_delete_on_termination: true
 
 infrastructure_controller_instances: 1
 infrastructure_controller_shape: m5a.xlarge
-infrastructure_controller_ami: ami-0993e213bcd3d244c
 
 infrastructure_hub_instances: 1
 infrastructure_hub_shape: m5a.large

@@ -1,34 +1,42 @@
 ---
-# - name: Destroy VMs
-#   amazon.aws.ec2_instance:
-#     region: "{{ infrastructure_region }}"
-#     state: absent
-#     filters:
-#       "tag:purpose": ansible-automation-platform
-#       "tag:environment": aap
-#       "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
-#       "instance-state-name":
-#         - pending
-#         - running
-#         - shutting-down
-#         - stopping
-#         - stopped
-#     wait: true
-#   register: deleted_instances
+- name: Destroy VMs
+  amazon.aws.ec2_instance:
+    region: "{{ infrastructure_region }}"
+    state: absent
+    filters:
+      "tag:purpose": ansible-automation-platform
+      "tag:environment": aap
+      "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
+      "instance-state-name":
+        - pending
+        - running
+        - shutting-down
+        - stopping
+        - stopped
+    wait: true
+  register: deleted_instances
 
-# - name: Delete databases
-#   block:
-#     - name: delete databases
-#       amazon.aws.rds_instance:
-#         region: "{{ infrastructure_region }}"
-#         state: absent
-#         db_instance_identifier: "{{ item }}"
-#       loop:
-#         - "aap-infrastructure-{{ deployment_id }}-controller-db"
-#         - "aap-infrastructure-{{ deployment_id }}-hub-db"
-#         - "aap-infrastructure-{{ deployment_id }}-eda-db"
-#       register: deleted_databases
-#   ignore_errors: true
+- name: Delete databases
+  ignore_errors: true
+  block:
+    - name: Delete databases
+      amazon.aws.rds_instance:
+        region: "{{ infrastructure_region }}"
+        state: absent
+        db_instance_identifier: "{{ item }}"
+      loop:
+        - "aap-infrastructure-{{ deployment_id }}-controller-db"
+        - "aap-infrastructure-{{ deployment_id }}-hub-db"
+        - "aap-infrastructure-{{ deployment_id }}-eda-db"
+      register: deleted_databases
+
+
+- name: Create delete group
+  amazon.aws.rds_subnet_group:
+    region: "{{ infrastructure_region }}"
+    state: absent
+    name: "aap-infrastructure-{{ deployment_id }}-subnet-group"
+  register: deleted_db_subnet_group
 
 - name: Get VPC
   amazon.aws.ec2_vpc_net_info:

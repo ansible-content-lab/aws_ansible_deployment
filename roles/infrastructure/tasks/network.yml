@@ -127,7 +127,7 @@
 - name: Create new route table
   when: infrastructure_route_table_id is not defined
   block:
-    - name: Create route table info
+    - name: Create route table
       amazon.aws.ec2_vpc_route_table:
         region: "{{ infrastructure_region }}"
         routes:
