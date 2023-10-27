@@ -1,0 +1,126 @@
+---
+# - name: Destroy VMs
+#   amazon.aws.ec2_instance:
+#     region: "{{ infrastructure_region }}"
+#     state: absent
+#     filters:
+#       "tag:purpose": ansible-automation-platform
+#       "tag:environment": aap
+#       "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
+#       "instance-state-name":
+#         - pending
+#         - running
+#         - shutting-down
+#         - stopping
+#         - stopped
+#     wait: true
+#   register: deleted_instances
+
+# - name: Delete databases
+#   block:
+#     - name: delete databases
+#       amazon.aws.rds_instance:
+#         region: "{{ infrastructure_region }}"
+#         state: absent
+#         db_instance_identifier: "{{ item }}"
+#       loop:
+#         - "aap-infrastructure-{{ deployment_id }}-controller-db"
+#         - "aap-infrastructure-{{ deployment_id }}-hub-db"
+#         - "aap-infrastructure-{{ deployment_id }}-eda-db"
+#       register: deleted_databases
+#   ignore_errors: true
+
+- name: Get VPC
+  amazon.aws.ec2_vpc_net_info:
+    region: "{{ infrastructure_region }}"
+    filters:
+      "tag:purpose": ansible-automation-platform
+      "tag:environment": aap
+      "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
+  register: vpcs
+
+- name: Get subnets
+  amazon.aws.ec2_vpc_subnet_info:
+    region: "{{ infrastructure_region }}"
+    filters:
+      "tag:purpose": ansible-automation-platform
+      "tag:environment": aap
+      "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
+  register: subnets
+
+- name: Delete subnets
+  when:
+    - vpcs is defined
+    - vpcs.vpcs | length > 0
+    - subnets is defined
+    - subnets.subnets | length > 0
+  amazon.aws.ec2_vpc_subnet:
+    region: "{{ infrastructure_region }}"
+    cidr: "{{ item.cidr_block }}"
+    vpc_id: "{{ vpcs.vpcs[0].id }}"
+    state: absent
+  loop: "{{ subnets.subnets }}"
+  register: deleted_subnets
+
+- name: Delete Internet Gateways
+  when:
+    - vpcs is defined
+    - vpcs.vpcs | length > 0
+  amazon.aws.ec2_vpc_igw:
+    region: "{{ infrastructure_region }}"
+    vpc_id: "{{ vpcs.vpcs[0].id }}"
+    state: absent
+  register: deleted_igws
+
+- name: Get security groups
+  amazon.aws.ec2_security_group_info:
+    region: "{{ infrastructure_region }}"
+    filters:
+      "tag:purpose": ansible-automation-platform
+      "tag:environment": aap
+      "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
+  register: sgs
+
+- name: Delete security groups
+  when:
+    - sgs is defined
+    - sgs.security_groups | length > 0
+  amazon.aws.ec2_security_group:
+    region: "{{ infrastructure_region }}"
+    group_id: "{{ item.group_id }}"
+    state: absent
+  loop: "{{ sgs.security_groups }}"
+  register: deleted_sgs
+
+- name: Get route tables
+  amazon.aws.ec2_vpc_route_table_info:
+    region: "{{ infrastructure_region }}"
+    filters:
+      "tag:purpose": ansible-automation-platform
+      "tag:environment": aap
+      "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
+  register: rts
+
+- name: Delete route tables
+  when:
+    - vpcs is defined
+    - vpcs.vpcs | length > 0
+    - rts is defined
+    - rts.route_tables | length > 0
+  amazon.aws.ec2_vpc_route_table:
+    region: "{{ infrastructure_region }}"
+    route_table_id: "{{ item.id }}"
+    state: absent
+  loop: "{{ rts.route_tables }}"
+  register: deleted_rts
+
+- name: Delete VPC
+  when:
+    - vpcs is defined
+    - vpcs.vpcs | length > 0
+  amazon.aws.ec2_vpc_net:
+    region: "{{ infrastructure_region }}"
+    vpc_id: "{{ item.vpc_id }}"
+    state: absent
+  loop: "{{ vpcs.vpcs }}"
+  register: deleted_vpcs

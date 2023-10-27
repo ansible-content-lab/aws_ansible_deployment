@@ -59,6 +59,7 @@
 
 - name: Create VMs
   when: infrastructure_hub_vms_to_create | int > 0
+  ignore_errors: true
   block:
     - name: Include create vm task
       ansible.builtin.include_tasks: vm.yml
@@ -74,7 +75,3 @@
         subnet: "{{ infrastructure_subnet_ids[1] }}"
       tags:
         - hub
-  rescue:
-    - name: Create VM error
-      ansible.builtin.debug:
-        msg: 'No VMs to create'

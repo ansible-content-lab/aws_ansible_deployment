@@ -1,0 +1,11 @@
+---
+- name: Destroy AWS infrastructure
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Deploy Infrastructure
+      ansible.builtin.import_role:
+        name: infrastructure
+        tasks_from: destroy

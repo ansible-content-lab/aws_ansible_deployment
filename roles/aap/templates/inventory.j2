@@ -17,10 +17,10 @@ peers=execution_nodes
 [all:vars]
 admin_password='{{ aap_admin_password }}'
 
-pg_host='{{ infrastructure_db_host }}'
+pg_host='{{ infrastructure_controller_db_host }}'
 pg_port=5432
 
-pg_database='aap'
+pg_database='controller'
 pg_username='{{ infrastructure_db_username }}'
 pg_password='{{ infrastructure_db_password }}'
 pg_sslmode='prefer'  # set to 'verify-full' for client-side enforced SSL
@@ -37,20 +37,20 @@ receptor_listener_port=27199
 
 automationhub_admin_password='{{ aap_admin_password }}'
 
-automationhub_pg_host='{{ infrastructure_db_host }}'
+automationhub_pg_host='{{ infrastructure_hub_db_host }}'
 automationhub_pg_port=5432
 
-automationhub_pg_database='automationhub'
+automationhub_pg_database='hub'
 automationhub_pg_username='{{ infrastructure_db_username }}'
 automationhub_pg_password='{{ infrastructure_db_password }}'
 automationhub_pg_sslmode='prefer'
 
 automationedacontroller_admin_password='{{ aap_admin_password }}'
 
-automationedacontroller_pg_host='{{ infrastructure_db_host }}'
+automationedacontroller_pg_host='{{ infrastructure_eda_db_host }}'
 automationedacontroller_pg_port=5432
 
-automationedacontroller_pg_database='automationedacontroller'
+automationedacontroller_pg_database='eda'
 automationedacontroller_pg_username='{{ infrastructure_db_username }}'
 automationedacontroller_pg_password='{{ infrastructure_db_password }}'
 automationedacontroller_pg_sslmode='prefer'

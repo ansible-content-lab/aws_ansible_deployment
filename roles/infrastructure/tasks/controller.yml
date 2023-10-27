@@ -59,6 +59,7 @@
 
 - name: Create VMs
   when: infrastructure_controller_vms_to_create | int > 0
+  ignore_errors: true
   block:
     - name: Include create vm task
       ansible.builtin.include_tasks: vm.yml
@@ -74,7 +75,3 @@
         app_tag: controller
       tags:
         - controller
-  rescue:
-    - name: Create VM error
-      ansible.builtin.debug:
-        msg: 'No VMs to create'

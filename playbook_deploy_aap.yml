@@ -53,7 +53,7 @@
     controller_hosts: "{{ groups.controller }}"
     hub_hosts: "{{ groups.hub | default('') }}"
     eda_hosts: "{{ groups.eda | default('') }}"
-    infrastructure_db_host: "{{ hostvars.localhost.infrastructure_db.endpoint.address }}"
+    infrastructure_controller_db_host: "{{ hostvars.localhost.infrastructure_db.endpoint.address }}"
   tasks:
     - name: Run AAP role
       ansible.builtin.import_role:

@@ -1,4 +1,10 @@
 ---
+- name: Verify required variables are set
+  ansible.builtin.assert:
+    that:
+      - aap_admin_password is defined
+    msg: Required variables for the AAP inventory are not set
+
 - name: Copy inventory to install server
   ansible.builtin.template:
     src: inventory.j2
