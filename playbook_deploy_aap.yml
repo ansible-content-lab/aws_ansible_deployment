@@ -9,33 +9,16 @@
       ansible.builtin.import_role:
         name: infrastructure
 
-- name: Ensure VMs are up-to-date
-  hosts: aap
-  gather_facts: false
-  become: true
-  tasks:
-    - name: Check VMs are available
-      ansible.builtin.wait_for_connection:
-        delay: 30
+    - name: Wait 5 mins for VMs to become available
+      ansible.builtin.wait_for:
+        host: "{{ item }}"
+        port: 22
         timeout: 300
-    - name: Upgrade all packages
-      ansible.builtin.dnf:
-        name: "*"
-        state: latest
+      loop: "{{ groups.public }}"
 
-- name: Configure hosts
-  hosts: localhost
-  connection: local
-  gather_facts: false
-  become: false
-  tasks:
-    - name: Debug hosts
-      ansible.builtin.debug:
-        var: hostvars.localhost.infrastructure_db.endpoint.address
-
-- name: Enable AAP repos
-  hosts: "{{ groups.aap | default('all') }}"
-  gather_facts: false
+- name: Ensure VMs are up-to-date
+  hosts: public
+  gather_facts: true
   become: true
   tasks:
     - name: Register subscription manager
@@ -48,9 +31,13 @@
       ansible.builtin.command: sudo subscription-manager config --rhsm.manage_repos=1
       register: rhsp
       failed_when: rhsp.rc == 1
+    - name: Upgrade all packages
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
 
 - name: Install AAP
-  hosts: "{{ groups.controller[0] | default('all') }}"
+  hosts: installer
   gather_facts: true
   become: false
   vars:

@@ -30,7 +30,6 @@
         - "aap-infrastructure-{{ deployment_id }}-eda-db"
       register: deleted_databases
 
-
 - name: Create delete group
   amazon.aws.rds_subnet_group:
     region: "{{ infrastructure_region }}"

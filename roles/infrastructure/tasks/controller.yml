@@ -34,13 +34,33 @@
   tags:
     - controller
 
-- name: Add hosts to group
+- name: Add public IP host to installer
+  when: |
+    groups.installer is not defined
+    or groups.installer | length == 0
+  ansible.builtin.add_host:
+    groups:
+     - installer
+    name: "{{ infrastructure_existing_vm.instances[0].public_ip_address }}"
+  tags:
+    - controller
+  
+- name: Add public IP hosts to group
   when: infrastructure_existing_vm.instances | length > 0
   ansible.builtin.add_host:
     groups:
-      - aap
-      - controller
+      - public
     name: "{{ item.public_ip_address }}"
+  loop: "{{ infrastructure_existing_vm.instances }}"
+  tags:
+    - controller
+
+- name: Add private IPs hosts to group
+  ansible.builtin.add_host:
+    groups:
+      - private
+      - controller
+    name: "{{ item.private_ip_address }}"
   loop: "{{ infrastructure_existing_vm.instances }}"
   tags:
     - controller

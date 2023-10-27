@@ -34,16 +34,25 @@
   tags:
     - eda
 
-- name: Add hosts to group
+- name: Add public IP hosts to group
   when: infrastructure_existing_vm.instances | length > 0
   ansible.builtin.add_host:
     groups:
-      - aap
-      - eda
+      - public
     name: "{{ item.public_ip_address }}"
   loop: "{{ infrastructure_existing_vm.instances }}"
   tags:
-    - eda
+    - hub
+
+- name: Add private IPs hosts to group
+  ansible.builtin.add_host:
+    groups:
+      - private
+      - eda
+    name: "{{ item.private_ip_address }}"
+  loop: "{{ infrastructure_existing_vm.instances }}"
+  tags:
+    - hub
 
 - name: Set number of eda VMs to create
   ansible.builtin.set_fact:

@@ -45,7 +45,20 @@
     - infrastructure_ec2_instance.instances is defined
     - infrastructure_ec2_instance.instances | length > 0
 
-- name: Add hosts to group
+- name: Add public IP host to installer
+  when: groups.installer is not defined
   ansible.builtin.add_host:
-    groups: "{{ host_groups | default(['aap']) }}"
+    groups:
+     - installer
     name: "{{ infrastructure_ec2_instance.instances[0].public_ip_address }}"
+
+- name: Add public IP hosts to group
+  ansible.builtin.add_host:
+    groups:
+      - public
+    name: "{{ infrastructure_ec2_instance.instances[0].public_ip_address }}"
+
+- name: Add private IPs hosts to group
+  ansible.builtin.add_host:
+    groups: "{{ host_groups + ['private'] | default(['aap']) }}"
+    name: "{{ infrastructure_ec2_instance.instances[0].private_ip_address }}"

@@ -1,4 +1,8 @@
 ---
+- name: Notify about time
+  ansible.builtin.debug:
+    msg: This process can take a long time to complete.
+
 - name: Run the AAP install script
   ansible.builtin.shell: "ANSIBLE_BECOME_METHOD='sudo' ANSIBLE_BECOME=True {{ aap_installer_installer_path }}setup.sh"
   register: install
