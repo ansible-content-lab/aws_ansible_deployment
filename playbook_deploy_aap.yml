@@ -27,10 +27,12 @@
         username: "{{ aap_red_hat_username }}"
         password: "{{ aap_red_hat_password }}"
         auto_attach: true
+
     - name: Ensure rhsm is managing repos
       ansible.builtin.command: sudo subscription-manager config --rhsm.manage_repos=1
       register: rhsp
       failed_when: rhsp.rc == 1
+
     - name: Upgrade all packages
       ansible.builtin.dnf:
         name: "*"
@@ -41,12 +43,12 @@
   gather_facts: true
   become: false
   vars:
-    controller_hosts: "{{ groups.controller }}"
-    hub_hosts: "{{ groups.hub | default('') }}"
-    eda_hosts: "{{ groups.eda | default('') }}"
-    infrastructure_controller_db_host: "{{ hostvars.localhost.infrastructure_controller_db.endpoint.address }}"
-    infrastructure_hub_db_host: "{{ hostvars.localhost.infrastructure_hub_db.endpoint.address | default('') }}"
-    infrastructure_eda_db_host: "{{ hostvars.localhost.infrastructure_eda_db.endpoint.address | default('') }}"
+    aap_controller_hosts: "{{ groups.controller }}"
+    aap_hub_hosts: "{{ groups.hub | default('') }}"
+    aap_eda_hosts: "{{ groups.eda | default('') }}"
+    aap_controller_db_host: "{{ hostvars.localhost.infrastructure_controller_db.endpoint.address }}"
+    aap_hub_db_host: "{{ hostvars.localhost.infrastructure_hub_db.endpoint.address | default('') }}"
+    aap_eda_db_host: "{{ hostvars.localhost.infrastructure_eda_db.endpoint.address | default('') }}"
   tasks:
     - name: Run AAP role
       ansible.builtin.import_role:

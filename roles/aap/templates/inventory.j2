@@ -1,5 +1,5 @@
 [automationcontroller]
-{{ controller_hosts | join('\n') }}
+{{ aap_controller_hosts | join('\n') }}
 
 [automationcontroller:vars]
 peers=execution_nodes
@@ -7,23 +7,23 @@ peers=execution_nodes
 [execution_nodes]
 
 [automationhub]
-{{ hub_hosts | join('\n') }}
+{{ aap_hub_hosts | join('\n') }}
 
 [automationedacontroller]
-{{ eda_hosts | join('\n') }}
+{{ aap_eda_hosts | join('\n') }}
 
 [database]
 
 [all:vars]
 admin_password='{{ aap_admin_password }}'
 
-pg_host='{{ infrastructure_controller_db_host }}'
+pg_host='{{ aap_controller_db_host }}'
 pg_port=5432
 
 pg_database='controller'
 pg_username='{{ infrastructure_db_username }}'
 pg_password='{{ infrastructure_db_password }}'
-pg_sslmode='prefer'  # set to 'verify-full' for client-side enforced SSL
+pg_sslmode='prefer'
 
 install_pg_port=5432
 
@@ -37,7 +37,7 @@ receptor_listener_port=27199
 
 automationhub_admin_password='{{ aap_admin_password }}'
 
-automationhub_pg_host='{{ infrastructure_hub_db_host }}'
+automationhub_pg_host='{{ aap_hub_db_host }}'
 automationhub_pg_port=5432
 
 automationhub_pg_database='hub'
@@ -47,7 +47,7 @@ automationhub_pg_sslmode='prefer'
 
 automationedacontroller_admin_password='{{ aap_admin_password }}'
 
-automationedacontroller_pg_host='{{ infrastructure_eda_db_host }}'
+automationedacontroller_pg_host='{{ aap_eda_db_host }}'
 automationedacontroller_pg_port=5432
 
 automationedacontroller_pg_database='eda'
