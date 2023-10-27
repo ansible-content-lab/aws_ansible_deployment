@@ -3,3 +3,8 @@
   ansible.builtin.file:
     path: "{{ aap_installer_unarchive_path }}"
     state: absent
+
+- name: Remove SSH key
+  ansible.builtin.file:
+    path: "{{ aap_installer_ssh_key_dest }}"
+    state: absent

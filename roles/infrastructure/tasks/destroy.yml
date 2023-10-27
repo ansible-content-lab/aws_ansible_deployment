@@ -24,13 +24,14 @@
         region: "{{ infrastructure_region }}"
         state: absent
         db_instance_identifier: "{{ item }}"
+        skip_final_snapshot: true
       loop:
         - "aap-infrastructure-{{ deployment_id }}-controller-db"
         - "aap-infrastructure-{{ deployment_id }}-hub-db"
         - "aap-infrastructure-{{ deployment_id }}-eda-db"
       register: deleted_databases
 
-- name: Create delete group
+- name: Delete db subnet group
   amazon.aws.rds_subnet_group:
     region: "{{ infrastructure_region }}"
     state: absent
@@ -117,6 +118,8 @@
   amazon.aws.ec2_vpc_route_table:
     region: "{{ infrastructure_region }}"
     route_table_id: "{{ item.id }}"
+    vpc_id: "{{ vpcs.vpcs[0].vpc_id }}"
+    lookup: id
     state: absent
   loop: "{{ rts.route_tables }}"
   register: deleted_rts
