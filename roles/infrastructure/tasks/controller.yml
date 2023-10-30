@@ -164,7 +164,7 @@
         - infrastructure_cert_key_path | length > 0
         - infrastructure_cert_domain_name is defined
       community.aws.aws_acm:
-        certificate: "{{ lookup('file', infrastructure_cert_path ) }}"
+        certificate: "{{ lookup('file', infrastructure_cert_path) }}"
         private_key: "{{ lookup('file', infrastructure_cert_key_path ) }}"
         domain_name: "{{ infrastructure_cert_domain_name }}"
         name_tag: "aap-infrastructure-{{ deployment_id }}-cert"

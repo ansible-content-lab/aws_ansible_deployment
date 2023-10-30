@@ -40,6 +40,7 @@ tags:
 # range specifiers can be set and are separated by ','
 dependencies:
   amazon.aws: '>=6.5.0'
+  ansible.utils: '>=2.11.0'
   community.aws: '>=6.3.0'
   community.general: '>=7.5.0' 
 
