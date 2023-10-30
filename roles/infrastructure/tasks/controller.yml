@@ -103,6 +103,7 @@
 - name: Create a load balancer for controller instances
   when:
     - infrastructure_create_controller_lb
+    - infrastructure_controller_instances > 1
   block:
     - name: Check if the controller VMs are already provisioned
       amazon.aws.ec2_instance_info:
@@ -165,7 +166,7 @@
         - infrastructure_cert_domain_name is defined
       community.aws.aws_acm:
         certificate: "{{ lookup('file', infrastructure_cert_path) }}"
-        private_key: "{{ lookup('file', infrastructure_cert_key_path ) }}"
+        private_key: "{{ lookup('file', infrastructure_cert_key_path) }}"
         domain_name: "{{ infrastructure_cert_domain_name }}"
         name_tag: "aap-infrastructure-{{ deployment_id }}-cert"
         region: "{{ infrastructure_region }}"
