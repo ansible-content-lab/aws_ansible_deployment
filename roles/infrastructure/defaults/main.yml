@@ -5,18 +5,20 @@ infrastructure_region: us-east-1
 # Networking
 infrastructure_vpc_cidr: 172.16.0.0/22
 infrastructure_vpc_subnets:
-  - name: "1"
+  - name: "controller"
     cidr: 172.16.0.0/24
     az: us-east-1a
-  - name: "2"
+  - name: "execution_nodes"
     cidr: 172.16.1.0/24
     az: us-east-1b
-  - name: "3"
+  - name: "hub"
     cidr: 172.16.2.0/24
     az: us-east-1c
-  - name: "4"
+  - name: "eda"
     cidr: 172.16.3.0/24
     az: us-east-1d
+infrastructure_create_controller_lb: false
+infrastructure_lb_scheme: internet-facing
 
 # Compute
 infrastructure_ami_filter:

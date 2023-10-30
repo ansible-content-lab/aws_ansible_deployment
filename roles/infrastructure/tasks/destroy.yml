@@ -38,6 +38,27 @@
     name: "aap-infrastructure-{{ deployment_id }}-subnet-group"
   register: deleted_db_subnet_group
 
+- name: Delete target group for load balancer
+  community.aws.elb_target_group:
+    region: "{{ infrastructure_region }}"
+    name: "aap-infrastructure-{{ deployment_id }}-lbtg"
+    vpc_id: "{{ infrastructure_vpc_id }}"
+    state: absent
+  register: infrastructure_lb_target_group
+
+- name: Delete load balancer certificate
+  community.aws.aws_acm:
+    name_tag: "aap-infrastructure-{{ deployment_id }}-cert"
+    region: "{{ infrastructure_region }}"
+    state: absent
+  register: infrastructure_cert
+
+- name: Delete load balancer
+  amazon.aws.elb_application_lb:
+    name: "aap-infrastructure-{{ deployment_id }}-lb"
+    region: "{{ infrastructure_region }}"
+    state: absent
+
 - name: Get VPC
   amazon.aws.ec2_vpc_net_info:
     region: "{{ infrastructure_region }}"

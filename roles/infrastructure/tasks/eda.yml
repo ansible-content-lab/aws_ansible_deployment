@@ -69,6 +69,8 @@
 - name: Create VMs
   when: infrastructure_eda_vms_to_create | int > 0
   ignore_errors: true
+  vars:
+    subnet_index: "{{ lookup('ansible.utils.index_of', infrastructure_vpc_subnets, 'eq', 'eda', 'name') }}"
   block:
     - name: Include create vm task
       ansible.builtin.include_tasks: vm.yml
@@ -81,6 +83,6 @@
           - aap
           - eda
         app_tag: eda
-        subnet: "{{ infrastructure_subnet_ids[2] }}"
+        subnet: "{{ infrastructure_subnet_ids[subnet_index | int] }}"
       tags:
         - eda

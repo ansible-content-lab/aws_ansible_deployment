@@ -82,6 +82,8 @@
 - name: Create VMs
   when: infrastructure_controller_vms_to_create | int > 0
   ignore_errors: true
+  vars:
+    subnet_index: "{{ lookup('ansible.utils.index_of', infrastructure_vpc_subnets, 'eq', 'controller', 'name') }}"
   block:
     - name: Include create vm task
       ansible.builtin.include_tasks: vm.yml
@@ -90,10 +92,131 @@
         instance_type: "{{ infrastructure_controller_shape }}"
         ami: "{{ infrastructure_controller_ami }}"
         vm_name_prefix: controller-
-        subnet: "{{ infrastructure_subnet_ids[0] }}"
+        subnet: "{{ infrastructure_subnet_ids[subnet_index | int] }}"
         host_groups:
           - aap
           - controller
         app_tag: controller
       tags:
         - controller
+
+- name: Create a load balancer for controller instances
+  when:
+    - infrastructure_create_controller_lb
+  block:
+    - name: Check if the controller VMs are already provisioned
+      amazon.aws.ec2_instance_info:
+        filters:
+          "tag:purpose": ansible-automation-platform
+          "tag:environment": aap
+          "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
+          "tag:app": controller
+          "instance-state-name":
+            - pending
+            - running
+            - shutting-down
+            - stopping
+            - stopped
+        region: "{{ infrastructure_region }}"
+      register: infrastructure_existing_vm
+      tags:
+        - controller
+
+    - name: Add existing VMs to lb target group
+      when:
+        - infrastructure_create_controller_lb
+        - infrastructure_existing_vm is defined
+        - infrastructure_existing_vm.instances | length > 0
+      ansible.builtin.set_fact:
+        infrastructure_lb_targets: "{{ (infrastructure_lb_targets | default([])) + [{\"Id\": item.instance_id, \"Port\": 443}] }}"
+      loop: "{{ infrastructure_existing_vm.instances }}"
+
+    - name: Create a target group for load balancer
+      when:
+        - infrastructure_create_controller_lb
+        - infrastructure_lb_targets is defined
+        - infrastructure_lb_targets | length > 0
+      community.aws.elb_target_group:
+        region: "{{ infrastructure_region }}"
+        name: "aap-infrastructure-{{ deployment_id }}-lbtg"
+        protocol: https
+        port: 443
+        vpc_id: "{{ infrastructure_vpc_id }}"
+        state: present
+        health_check_protocol: https
+        health_check_path: /
+        # target_type: ip
+        targets: "{{ infrastructure_lb_targets }}"
+        wait: false
+        tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-lbtg"
+          purpose: ansible-automation-platform
+          environment: aap
+          deployment: "aap-infrastructure-{{ deployment_id }}"
+      register: infrastructure_lb_target_group
+
+    - name: Upload a certificate
+      when:
+        - infrastructure_create_controller_lb
+        - infrastructure_cert_path is defined
+        - infrastructure_cert_path | length > 0
+        - infrastructure_cert_key_path is defined
+        - infrastructure_cert_key_path | length > 0
+        - infrastructure_cert_domain_name is defined
+      community.aws.aws_acm:
+        certificate: "{{ lookup('file', infrastructure_cert_path ) }}"
+        private_key: "{{ lookup('file', infrastructure_cert_key_path ) }}"
+        domain_name: "{{ infrastructure_cert_domain_name }}"
+        name_tag: "aap-infrastructure-{{ deployment_id }}-cert"
+        region: "{{ infrastructure_region }}"
+        tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-cert"
+          purpose: ansible-automation-platform
+          environment: aap
+          deployment: "aap-infrastructure-{{ deployment_id }}"
+      register: infrastructure_cert
+
+    - name: Create Controller load balancer
+      when:
+        - infrastructure_create_controller_lb
+        - infrastructure_cert is defined
+        - infrastructure_cert.certificate.arn is defined
+      vars:
+        controller_subnet_index: "{{ lookup('ansible.utils.index_of', infrastructure_vpc_subnets, 'eq', 'controller', 'name') }}"
+        ee_subnet_index: "{{ lookup('ansible.utils.index_of', infrastructure_vpc_subnets, 'eq', 'execution_nodes', 'name') }}"
+      amazon.aws.elb_application_lb:
+        name: "aap-infrastructure-{{ deployment_id }}-lb"
+        region: "{{ infrastructure_region }}"
+        security_groups:
+          - "{{ infrastructure_security_group_id }}"
+        subnets:
+          - "{{ infrastructure_subnet_ids[controller_subnet_index | int] }}"
+          - "{{ infrastructure_subnet_ids[ee_subnet_index | int] }}"
+        listeners:
+          - Protocol: HTTPS
+            Port: 443
+            SslPolicy: ELBSecurityPolicy-TLS-1-2-2017-01
+            Certificates:
+              - CertificateArn: "{{ infrastructure_cert.certificate.arn }}"
+            DefaultActions:
+              - Type: forward
+                TargetGroupName: "{{ infrastructure_lb_target_group.target_group_name }}"
+          - Protocol: HTTP
+            Port: 80
+            DefaultActions:
+              - Type: redirect
+                RedirectConfig:
+                  Host: "#{host}"
+                  Path: "/#{path}"
+                  Port: "443"
+                  Protocol: HTTPS
+                  Query: "#{query}"
+                  StatusCode: "HTTP_301"
+        ip_address_type: ipv4
+        scheme: "{{ infrastructure_lb_scheme }}"
+        state: present
+        tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-lb"
+          purpose: ansible-automation-platform
+          environment: aap
+          deployment: "aap-infrastructure-{{ deployment_id }}"
