@@ -54,6 +54,11 @@
     wait: true
   register: deleted_target_group
 
+- name: Wait 30 seconds for LB to delete to release certificate
+  ansible.builtin.wait_for:
+    timeout: 30
+  delegate_to: localhost
+
 - name: Delete load balancer certificate
   community.aws.aws_acm:
     name_tag: "aap-infrastructure-{{ deployment_id }}-cert"
