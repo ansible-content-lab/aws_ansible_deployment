@@ -9,11 +9,11 @@
       ansible.builtin.import_role:
         name: infrastructure
 
-    - name: Wait 5 mins for VMs to become available
+    - name: Wait 10 mins for VMs to become available
       ansible.builtin.wait_for:
         host: "{{ item }}"
         port: 22
-        timeout: 300
+        timeout: 600
       loop: "{{ groups.public }}"
 
 - name: Ensure VMs are up-to-date

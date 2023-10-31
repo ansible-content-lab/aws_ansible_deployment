@@ -221,3 +221,11 @@
           purpose: ansible-automation-platform
           environment: aap
           deployment: "aap-infrastructure-{{ deployment_id }}"
+      register: infrastructure_lb
+
+    - name: Set LB stats
+      ansible.builtin.set_stats:
+        data:
+          load_balancer_arn: "{{ infrastructure_lb.load_balancer_arn }}"
+          load_balancer_dns: "{{ infrastructure_lb.dns_name }}"
+        per_host: false

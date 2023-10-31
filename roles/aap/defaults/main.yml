@@ -4,5 +4,5 @@ aap_installer_unarchive_path: /home/ec2-user/
 aap_installer_installer_path: /home/ec2-user/ansible-automation-platform-setup-2.4/
 aap_installer_inventory_path: "{{ aap_installer_installer_path }}inventory"
 aap_ssh_path: /home/ec2-user/.ssh/
-aap_run_installer: false
+aap_run_installer: true
 aap_remove_installer_after_install: true

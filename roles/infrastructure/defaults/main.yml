@@ -17,8 +17,6 @@ infrastructure_vpc_subnets:
   - name: "eda"
     cidr: 172.16.3.0/24
     az: us-east-1d
-infrastructure_create_controller_lb: false
-infrastructure_lb_scheme: internet-facing
 
 # Compute
 infrastructure_ami_filter:
@@ -27,6 +25,8 @@ infrastructure_ami_filter:
   name: "RHEL-9.2.*_HVM-*"
 infrastructure_assign_public_ip: true
 infrastructure_delete_on_termination: true
+infrastructure_create_controller_lb: false
+infrastructure_lb_scheme: internet-facing
 
 infrastructure_controller_instances: 1
 infrastructure_controller_shape: m5a.xlarge
