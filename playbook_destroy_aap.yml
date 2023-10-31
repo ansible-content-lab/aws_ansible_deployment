@@ -35,7 +35,7 @@
   gather_facts: false
   become: true
   tasks:
-    - name: Register subscription manager
+    - name: Unregister subscription manager
       community.general.redhat_subscription:
         state: absent
         username: "{{ aap_red_hat_username }}"
