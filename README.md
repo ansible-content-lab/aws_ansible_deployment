@@ -122,6 +122,8 @@ The AWS collections used as dependencies require an AWS access key, secret key, 
 
 The playbooks included in this collection will need a way to connect to the virtual machines that it creates.  By default, VMs are created with public IP addresses to make this simple.  But, the collection may be modified to use private IP addresses if your local machine can route traffic to private networks.
 
+### Inventory File
+
 The following example of an `inventory` file configures an SSH user and a local private key that will be used when configuring the VMs and installing AAP.
 
 ```ini
