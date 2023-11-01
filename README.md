@@ -116,6 +116,22 @@ aap_remove_installer_after_install: true
 
 The AWS collections used as dependencies require an AWS access key, secret key, and sometimes a token (if using session authentication).  These variables can be set in different places, such as the variables file above or through environment variables.  The easiest, and most portable, approach will be to set the following env vars.
 
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `AWS_SESSION_TOKEN`
+
+The playbooks included in this collection will need a way to connect to the virtual machines that it creates.  By default, VMs are created with public IP addresses to make this simple.  But, the collection may be modified to use private IP addresses if your local machine can route traffic to private networks.
+
+The following example of an `inventory` file configures an SSH user and a local private key that will be used when configuring the VMs and installing AAP.
+
+```ini
+localhost
+
+[all:vars]
+ansible_ssh_user=ec2-user
+ansible_ssh_private_key_file=~/.ssh/scott_aws_test_key
+```
+
 ## Deploying Ansible Automation Platform
 
 This section will walk through deploying the AWS infrastructure and Ansible Automation Platform.
