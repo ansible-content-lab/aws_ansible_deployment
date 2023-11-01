@@ -100,12 +100,22 @@
       tags:
         - controller
 
+    - name: Wait 10 mins for VMs to become available
+      ansible.builtin.wait_for:
+        host: "{{ item }}"
+        port: 22
+        timeout: 600
+      loop: "{{ groups.public }}"
+
+# Creating the LB operates in its own block and will connect to controller VMs if they were either created
+# when running this deployment for the first time or if they were created in a previous run of the deployment.
 - name: Create a load balancer for controller instances
   when:
     - infrastructure_create_controller_lb
     - infrastructure_controller_instances > 1
   block:
-    - name: Check if the controller VMs are already provisioned
+    # Query for all controller VMs, both existing and new
+    - name: Get all controller VMs
       amazon.aws.ec2_instance_info:
         filters:
           "tag:purpose": ansible-automation-platform

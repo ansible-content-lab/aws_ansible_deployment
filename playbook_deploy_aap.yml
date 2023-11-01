@@ -9,7 +9,7 @@
       ansible.builtin.import_role:
         name: infrastructure
 
-    - name: Wait 10 mins for VMs to become available
+    - name: Wait 10 mins for all VMs to become available
       ansible.builtin.wait_for:
         host: "{{ item }}"
         port: 22
