@@ -83,6 +83,11 @@
   tags:
     - controller
 
+- name: Create Execution Node VMs
+  ansible.builtin.import_tasks: execution.yml
+  tags:
+    - execution
+
 - name: Create Hub VMs
   ansible.builtin.import_tasks: hub.yml
   tags:

@@ -5,6 +5,7 @@
 peers=execution_nodes
 
 [execution_nodes]
+{{ aap_ee_hosts | join('\n') }}
 
 [automationhub]
 {{ aap_hub_hosts | join('\n') }}

@@ -44,6 +44,7 @@
   become: false
   vars:
     aap_controller_hosts: "{{ groups.controller }}"
+    aap_ee_hosts: "{{ groups.execution | default('') }}"
     aap_hub_hosts: "{{ groups.hub | default('') }}"
     aap_eda_hosts: "{{ groups.eda | default('') }}"
     aap_controller_db_host: "{{ hostvars.localhost.infrastructure_controller_db.endpoint.address }}"

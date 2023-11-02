@@ -5,16 +5,16 @@ infrastructure_region: us-east-1
 # Networking
 infrastructure_vpc_cidr: 172.16.0.0/22
 infrastructure_vpc_subnets:
-  - name: "controller"
+  - name: controller
     cidr: 172.16.0.0/24
     az: us-east-1a
-  - name: "execution_nodes"
+  - name: execution
     cidr: 172.16.1.0/24
     az: us-east-1b
-  - name: "hub"
+  - name: hub
     cidr: 172.16.2.0/24
     az: us-east-1c
-  - name: "eda"
+  - name: eda
     cidr: 172.16.3.0/24
     az: us-east-1d
 
@@ -30,6 +30,9 @@ infrastructure_lb_scheme: internet-facing
 
 infrastructure_controller_instances: 1
 infrastructure_controller_shape: m5a.xlarge
+
+infrastructure_execution_instances: 1
+infrastructure_execution_shape: m5a.xlarge
 
 infrastructure_hub_instances: 1
 infrastructure_hub_shape: m5a.large

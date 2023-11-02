@@ -194,7 +194,7 @@
         - infrastructure_cert.certificate.arn is defined
       vars:
         controller_subnet_index: "{{ lookup('ansible.utils.index_of', infrastructure_vpc_subnets, 'eq', 'controller', 'name') }}"
-        ee_subnet_index: "{{ lookup('ansible.utils.index_of', infrastructure_vpc_subnets, 'eq', 'execution_nodes', 'name') }}"
+        ee_subnet_index: "{{ lookup('ansible.utils.index_of', infrastructure_vpc_subnets, 'eq', 'execution', 'name') }}"
       amazon.aws.elb_application_lb:
         name: "aap-infrastructure-{{ deployment_id }}-lb"
         region: "{{ infrastructure_region }}"
