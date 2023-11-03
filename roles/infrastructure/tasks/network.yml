@@ -93,8 +93,8 @@
             cidr_ip: 0.0.0.0/0
             rule_desc: allow external ports for SSH, HTTPS, and Automation Mesh
           - proto: icmp
-            icmp_type: 3
-            icmp_code: 1
+            icmp_type: -1
+            icmp_code: -1
             cidr_ip: "{{ infrastructure_vpc_cidr }}"
             rule_desc: allow ping on local net
           - proto: tcp
