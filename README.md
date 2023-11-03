@@ -32,7 +32,13 @@ These sections will describe required or recommended steps so that your Ansible 
 
 ### This Collection
 
-Download this collection's git repository so that you may run the playbooks included.  If you install the collection through `ansible-galaxy`, then you may also access the playbooks from your local Ansible collections directory.
+If you do not intend to make changes to the collection, then you can install directly from the `ansible-galaxy` CLI tool.  Examples in this readme will assume that you have done this.
+
+```bash
+ansible-galaxy collection install git+https://github.com/ansible-content-lab/aws.deployment.git
+```
+
+You may also download the collection from GitHub and modify to suit your needs.
 
 ### Red Hat Enterprise Linux
 
@@ -140,7 +146,7 @@ This section will walk through deploying the AWS infrastructure and Ansible Auto
 
 ### Checklist
 
-- [ ] Download this collection
+- [ ] Install this collection (or download and modify)
 - [ ] A RHEL AMI (if not using hourly RHEL instances)
 - [ ] A locally downloaded copy of the [AAP installer][aap-installer]
 - [ ] A variables file configured with required variables
@@ -153,7 +159,7 @@ This section will walk through deploying the AWS infrastructure and Ansible Auto
 Assuming that all variables are configured properly and your AWS account has permissions to deploy the resources defined in this collection, then running the playbook should be a single task.
 
 ```bash
-ansible-navigator run playbook_deploy_aap.yml \
+ansible-navigator run lab.aws_deployment.deploy_aap \
 -i env/inventory \
 --pae false \
 --mode stdout \
@@ -169,10 +175,10 @@ ansible-navigator run playbook_deploy_aap.yml \
 
 ## Uninstall
 
-The `playbook_destroy_aap.yml` playbook will remove RHEL subscription entitlements and deprovision the infrastructure that has been associated with a deployment id.  This will permanently remove all data, so only run this playbook if you are sure that you want to delete all traces of the deployment.
+The `playbooks/destroy_aap.yml` playbook will remove RHEL subscription entitlements and deprovision the infrastructure that has been associated with a deployment id.  This will permanently remove all data, so only run this playbook if you are sure that you want to delete all traces of the deployment.
 
 ```bash
-ansible-navigator run playbook_destroy_aap.yml \
+ansible-navigator run lab.aws_deployment.destroy_aap \
 -i env/inventory \
 --pae false \
 --mode stdout \
