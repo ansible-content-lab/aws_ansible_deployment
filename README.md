@@ -1,4 +1,4 @@
-# Ansible Collection - lab.aws.deployment
+# Ansible Collection - lab.aws_deployment
 
 This is a collection that will deploy Ansible on AWS.  While this collection will work with any Ansible deployment on AWS, this is intended to be a starting point for customers that purchase Ansible Automation Platform subscriptions from the AWS marketplace.  Take this collection and enhance/improve/update based on the resources that you need for your AAP deployment.
 
