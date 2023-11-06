@@ -35,7 +35,7 @@ These sections will describe required or recommended steps so that your Ansible 
 If you do not intend to make changes to the collection, then you can install directly from the `ansible-galaxy` CLI tool.  Examples in this readme will assume that you have done this.
 
 ```bash
-ansible-galaxy collection install git+https://github.com/ansible-content-lab/aws.deployment.git
+ansible-galaxy collection install git+https://github.com/ansible-content-lab/aws_deployment.git
 ```
 
 You may also download the collection from GitHub and modify to suit your needs.
@@ -56,10 +56,10 @@ This collection expects the standard "setup" file, not the "bundle".  And, it is
 
 This collection includes the following roles.  Each role has default variables and required variables.  Review the default variables files to view all of the options that may be set.
 
-| Role             | Description                                                                         |
-| ---------------- | ----------------------------------------------------------------------------------- |
-| `infrastructure` | Responsible for deploying the AWS infrastructure.                                   |
-| `aap`            | Responsible for configuring and installing AAP once the infrastructure is deployed. |
+| Role                                | Description                                                                         |
+| ----------------------------------- | ----------------------------------------------------------------------------------- |
+| `lab.aws_deployment.infrastructure` | Responsible for deploying the AWS infrastructure.                                   |
+| `lab.aws_deployment.aap`            | Responsible for configuring and installing AAP once the infrastructure is deployed. |
 
 ### Variables
 
@@ -67,7 +67,7 @@ The following identifies the variables that you **must** set before running the 
 
 | Variable                       | Description                                                                                                           |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| `infrastructure_region`        | The AWS regiong that the infrastructure will be deployed into.                                                        |
+| `infrastructure_region`        | The AWS region that the infrastructure will be deployed into.                                                        |
 | `infrastructure_db_username`   | The PostgreSQL admin username that will be used for databases.                                                        |
 | `infrastructure_db_password`   | The PostgreSQL admin password that will be used for databases.                                                        |
 | `aap_installer_src_path`       | The path to the AAP installer file on the local machine where playbooks will be run.                                  |
@@ -163,6 +163,7 @@ ansible-navigator run lab.aws_deployment.deploy_aap \
 -i env/inventory \
 --pae false \
 --mode stdout \
+--lf /dev/null \
 --forks 3 \
 --ee false \
 --penv AWS_ACCESS_KEY_ID \
@@ -182,6 +183,7 @@ ansible-navigator run lab.aws_deployment.destroy_aap \
 -i env/inventory \
 --pae false \
 --mode stdout \
+--lf /dev/null \
 --forks 3 \
 --ee false \
 --extra-vars "aap_red_hat_username=$RED_HAT_ACCOUNT" \
