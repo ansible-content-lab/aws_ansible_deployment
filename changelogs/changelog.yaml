@@ -1,0 +1,11 @@
+ancestor: null
+releases:
+  1.0.0:
+    changes:
+      major_changes:
+      - Deploy the RPM-based Ansible Automation Platform installer via RHEL-based
+        virtual machines on AWS.
+      release_summary: Initial release
+    fragments:
+    - initial.yaml
+    release_date: '2023-11-06'
