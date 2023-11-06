@@ -17,6 +17,7 @@
     image_id: "{{ ami }}"
     region: "{{ infrastructure_region }}"
     security_group: "{{ infrastructure_security_group_id }}"
+    volumes: "{{ infrastructure_volumes }}"
     tags:
       Name: "{{ vm_name }}"
       purpose: ansible-automation-platform

@@ -23,6 +23,13 @@ infrastructure_ami_filter:
   architecture: x86_64
   owner-id: "309956199498"
   name: "RHEL-9.2.*_HVM-*"
+infrastructure_volumes:
+  - device_name: /dev/sda1
+    ebs:
+      volume_type: io1
+      volume_size: 100
+      iops: 1500
+      delete_on_termination: true
 infrastructure_assign_public_ip: true
 infrastructure_delete_on_termination: true
 infrastructure_create_controller_lb: false

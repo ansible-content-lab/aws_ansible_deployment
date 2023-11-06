@@ -1,7 +1,7 @@
 ---
 - name: Notify about time
   ansible.builtin.debug:
-    msg: "This process can take a long time to complete.  If you want to follow the logs of the installer, then SSH into the installer server and follow the setup.log file at `{{ aap_installer_installer_path }}/setup.log`."
+    msg: "This process can take a long time to complete.  If you want to follow the logs of the installer, then SSH into the installer server and follow the setup.log file at `{{ aap_installer_installer_path }}setup.log`."
 
 - name: Run the AAP install script
   ansible.builtin.shell: "ANSIBLE_BECOME_METHOD='sudo' ANSIBLE_BECOME=True {{ aap_installer_installer_path }}setup.sh"
