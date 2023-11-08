@@ -83,7 +83,7 @@
     id: "aap-infrastructure-{{ deployment_id }}-eda-db"
     state: present
     engine: postgres
-    db_name: hub
+    db_name: eda
     engine_version: "{{ infrastructure_eda_db_engine_version }}"
     allow_major_version_upgrade: "{{ infrastructure_eda_db_allow_major_version_upgrade }}"
     auto_minor_version_upgrade: "{{ infrastructure_eda_db_auto_minor_version_upgrade }}"
@@ -99,7 +99,7 @@
       - "{{ infrastructure_security_group.group_id }}"
     db_subnet_group_name: "{{ infrastructure_db_subnet_group.subnet_group.name }}"
     tags:
-      Name: "aap-infrastructure-{{ deployment_id }}-hub-db"
+      Name: "aap-infrastructure-{{ deployment_id }}-eda-db"
       purpose: ansible-automation-platform
       environment: aap
       deployment: "aap-infrastructure-{{ deployment_id }}"
