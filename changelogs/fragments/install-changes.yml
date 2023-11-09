@@ -4,3 +4,5 @@ minor_changes:
   - Added ansible.cfg file with SSH args to keep connection open during AAP install.
   - Added output steps to make it easier to find connection details after deployment.
   - Updated get existing VMs logic to make it more reusable.
+  - Added a default for `aap_installer_ssh_key_dest` so that it is not required and will default to the ec2-user's ssh directory.
+  - Updated README to add SSH info.
