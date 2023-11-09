@@ -39,6 +39,7 @@
   ansible.builtin.add_host:
     groups:
       - public
+      - hub_public
     name: "{{ item.public_ip_address }}"
   loop: "{{ infrastructure_existing_vm.instances }}"
   tags:
@@ -48,7 +49,7 @@
   ansible.builtin.add_host:
     groups:
       - private
-      - hub
+      - hub_private
     name: "{{ item.private_ip_address }}"
   loop: "{{ infrastructure_existing_vm.instances }}"
   tags:
@@ -79,9 +80,11 @@
         instance_type: "{{ infrastructure_hub_shape }}"
         ami: "{{ infrastructure_hub_ami }}"
         vm_name_prefix: hub-
-        host_groups:
+        private_host_groups:
           - aap
-          - hub
+          - hub_private
+        public_host_groups:
+          - hub_public
         app_tag: hub
         subnet: "{{ infrastructure_subnet_ids[subnet_index | int] }}"
       tags:

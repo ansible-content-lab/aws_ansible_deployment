@@ -67,11 +67,11 @@ The following identifies the variables that you **must** set before running the 
 
 | Variable                       | Description                                                                                                           |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| `infrastructure_region`        | The AWS region that the infrastructure will be deployed into.                                                        |
+| `infrastructure_region`        | The AWS region that the infrastructure will be deployed into.                                                         |
 | `infrastructure_db_username`   | The PostgreSQL admin username that will be used for databases.                                                        |
 | `infrastructure_db_password`   | The PostgreSQL admin password that will be used for databases.                                                        |
 | `aap_installer_src_path`       | The path to the AAP installer file on the local machine where playbooks will be run.                                  |
-| `aap_installer_installer_path` | The path on the installer VM where the installer file will be copied.                                                 |
+| `aap_installer_path`           | The path on the installer VM where the installer file will be copied.                                                 |
 | `aap_installer_inventory_path` | The path on the installer VM where the inventory file will be created.                                                |
 | `aap_admin_password`           | The admin password to create for Ansible Automation Platform applications.                                            |
 | `aap_installer_ssh_key`        | The name of the SSH key on the local machine that will be used to connect to the installer VM and other VMs deployed. |
@@ -87,7 +87,7 @@ You may save this as any file, but later examples will use a file called `vars.y
 ```yaml
 ---
 infrastructure_region: us-east-1
-infrastructure_keypair_name: scott_aws_test_key
+infrastructure_keypair_name: aws_test_key
 
 infrastructure_controller_instances: 2
 infrastructure_controller_ami: ami-0d56aee8074bef5d3
@@ -106,12 +106,12 @@ infrastructure_cert_path: /Users/scott/Downloads/cert.pem
 infrastructure_cert_key_path: /Users/scott/Downloads/key.pem
 infrastructure_cert_domain_name: controller.my.custom.domain
 
-aap_installer_src_path: /Users/scott/Downloads/ansible-automation-platform-setup-2.4-2.tar.gz
-aap_installer_inventory_path: /home/ec2-user/ansible-automation-platform-setup-2.4-2/inventory
-aap_installer_installer_path: /home/ec2-user/ansible-automation-platform-setup-2.4-2/
-aap_admin_password: super_secret_app_password
-aap_installer_ssh_key: scott_aws_test_key
-aap_installer_ssh_key_src: "/Users/scott/.ssh/{{ aap_installer_ssh_key }}"
+aap_installer_src_path: ~/Downloads/ansible-automation-platform-setup-2.4-2.tar.gz
+aap_installer_unarchive_folder_name: ansible-automation-platform-setup-2.4-2
+aap_installer_inventory_path: "/home/ec2-user/{{ aap_installer_unarchive_folder_name }}/inventory"
+
+aap_installer_ssh_key: aws_test_key
+aap_installer_ssh_key_src: "~/.ssh/{{ aap_installer_ssh_key }}"
 aap_installer_ssh_key_dest: "/home/ec2-user/.ssh/{{ aap_installer_ssh_key }}"
 
 aap_run_installer: true

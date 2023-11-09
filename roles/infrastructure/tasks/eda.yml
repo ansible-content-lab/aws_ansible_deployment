@@ -39,6 +39,7 @@
   ansible.builtin.add_host:
     groups:
       - public
+      - eda_public
     name: "{{ item.public_ip_address }}"
   loop: "{{ infrastructure_existing_vm.instances }}"
   tags:
@@ -48,7 +49,7 @@
   ansible.builtin.add_host:
     groups:
       - private
-      - eda
+      - eda_private
     name: "{{ item.private_ip_address }}"
   loop: "{{ infrastructure_existing_vm.instances }}"
   tags:
@@ -79,10 +80,18 @@
         instance_type: "{{ infrastructure_eda_shape }}"
         ami: "{{ infrastructure_eda_ami }}"
         vm_name_prefix: eda-
-        host_groups:
+        private_host_groups:
           - aap
-          - eda
+          - eda_private
+        public_host_groups:
+          - eda_public
         app_tag: eda
         subnet: "{{ infrastructure_subnet_ids[subnet_index | int] }}"
       tags:
         - eda
+
+    - name: Save the public IP so that it can be added to EDA ALLOWED_HOSTS
+      ansible.builtin.add_host:
+        groups:
+          - eda_public
+        name: "{{ infrastructure_ec2_instance.instances[0].public_ip_address }}"

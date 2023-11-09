@@ -6,8 +6,8 @@
   become: false
   tasks:
     - name: Deploy Infrastructure
-      ansible.builtin.import_role:
-        name: infrastructure
+      ansible.builtin.include_role:
+        name: lab.aws_deployment.infrastructure
 
     - name: Wait 10 mins for all VMs to become available
       ansible.builtin.wait_for:
@@ -40,17 +40,18 @@
 
 - name: Install AAP
   hosts: installer
-  gather_facts: true
+  gather_facts: false
   become: false
   vars:
-    aap_controller_hosts: "{{ groups.controller }}"
-    aap_ee_hosts: "{{ groups.execution | default('') }}"
-    aap_hub_hosts: "{{ groups.hub | default('') }}"
-    aap_eda_hosts: "{{ groups.eda | default('') }}"
+    aap_controller_hosts: "{{ groups.controller_private }}"
+    aap_ee_hosts: "{{ groups.execution_private | default('') }}"
+    aap_hub_hosts: "{{ groups.hub_private | default('') }}"
+    aap_eda_hosts: "{{ groups.eda_private | default('') }}"
+    aap_eda_allowed_hostnames: "{{ (groups.eda_public | default([])) | join(',') }}"
     aap_controller_db_host: "{{ hostvars.localhost.infrastructure_controller_db.endpoint.address }}"
     aap_hub_db_host: "{{ hostvars.localhost.infrastructure_hub_db.endpoint.address | default('') }}"
     aap_eda_db_host: "{{ hostvars.localhost.infrastructure_eda_db.endpoint.address | default('') }}"
   tasks:
     - name: Run AAP role
-      ansible.builtin.import_role:
-        name: aap
+      ansible.builtin.include_role:
+        name: lab.aws_deployment.aap
