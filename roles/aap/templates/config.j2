@@ -1,4 +1,4 @@
 Host {{ aap_controller_hosts | join(' ') }} {{ aap_ee_hosts | join(' ') }} {{ aap_hub_hosts | join(' ') }} {{ aap_eda_hosts | join(' ') }}
     User ec2-user
-    IdentityFile ~/.ssh/{{ aap_installer_ssh_key }}
+    IdentityFile {{ aap_installer_ssh_key_dest }}
     StrictHostKeyChecking no
