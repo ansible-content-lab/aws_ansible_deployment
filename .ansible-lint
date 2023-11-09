@@ -6,5 +6,6 @@ verbosity: 1
 skip_list:
   - package-latest
   - command-instead-of-shell
+  - name[template]
 
 offline: false

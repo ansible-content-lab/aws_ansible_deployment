@@ -1,59 +1,26 @@
 ---
-- name: Check if the eda VMs are already provisioned
-  amazon.aws.ec2_instance_info:
-    filters:
-      "tag:purpose": ansible-automation-platform
-      "tag:environment": aap
-      "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
-      "tag:app": eda
-      "instance-state-name":
-        - pending
-        - running
-        - shutting-down
-        - stopping
-        - stopped
-    region: "{{ infrastructure_region }}"
-  register: infrastructure_existing_vm
-  tags:
-    - eda
+- name: Get existing VMs
+  block:
+    - name: Include get vms task
+      ansible.builtin.include_tasks: vms/get.yml
+      vars:
+        app_tag: eda
+        private_host_groups:
+          - aap
+          - eda_private
+        public_host_groups:
+          - eda_public
+      tags:
+        - eda
 
-- name: Output number of existing VMs
-  ansible.builtin.debug:
-    msg: "Number of existing eda VMs: {{ infrastructure_existing_vm.instances | length }}"
-  when: 
-    - infrastructure_existing_vm.instances is defined
-  tags:
-    - eda
-
-- name: Ensure existing VMs are running
-  amazon.aws.ec2_instance:
-    state: started
-    instance_ids: "{{ infrastructure_existing_vm.instances | map(attribute='instance_id') | list }}"
-    region: "{{ infrastructure_region }}"
-  when: infrastructure_existing_vm.instances | length > 0
-  tags:
-    - eda
-
-- name: Add public IP hosts to group
-  when: infrastructure_existing_vm.instances | length > 0
-  ansible.builtin.add_host:
-    groups:
-      - public
-      - eda_public
-    name: "{{ item.public_ip_address }}"
-  loop: "{{ infrastructure_existing_vm.instances }}"
-  tags:
-    - hub
-
-- name: Add private IPs hosts to group
-  ansible.builtin.add_host:
-    groups:
-      - private
-      - eda_private
-    name: "{{ item.private_ip_address }}"
-  loop: "{{ infrastructure_existing_vm.instances }}"
-  tags:
-    - hub
+    - name: Save the public IP so that it can be added to EDA ALLOWED_HOSTS
+      ansible.builtin.add_host:
+        groups:
+          - eda_public
+        name: "{{ infrastructure_existing_vm.instances[0].public_ip_address }}"
+      when:
+        - infrastructure_existing_vm.instances is defined
+        - infrastructure_existing_vm.instances | length > 0
 
 - name: Set number of eda VMs to create
   ansible.builtin.set_fact:
@@ -74,7 +41,7 @@
     subnet_index: "{{ lookup('ansible.utils.index_of', infrastructure_vpc_subnets, 'eq', 'eda', 'name') }}"
   block:
     - name: Include create vm task
-      ansible.builtin.include_tasks: vm.yml
+      ansible.builtin.include_tasks: vms/create.yml
       loop: "{{ query('sequence', 'start=1 end=' + (infrastructure_eda_vms_to_create | string)) }}"
       vars:
         instance_type: "{{ infrastructure_eda_shape }}"

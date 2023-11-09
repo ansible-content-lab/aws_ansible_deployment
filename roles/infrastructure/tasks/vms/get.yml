@@ -1,0 +1,43 @@
+---
+- name: "Check if the {{ app_tag }} VMs are already provisioned"
+  amazon.aws.ec2_instance_info:
+    filters:
+      "tag:purpose": ansible-automation-platform
+      "tag:environment": aap
+      "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
+      "tag:app": "{{ app_tag }}"
+      "instance-state-name":
+        - pending
+        - running
+        - shutting-down
+        - stopping
+        - stopped
+    region: "{{ infrastructure_region }}"
+  register: infrastructure_existing_vm
+
+- name: Output number of existing VMs
+  ansible.builtin.debug:
+    msg: "Number of existing {{ app_tag }} VMs: {{ infrastructure_existing_vm.instances | length }}"
+  when:
+    - infrastructure_existing_vm.instances is defined
+
+- name: Ensure existing VMs are running
+  amazon.aws.ec2_instance:
+    state: started
+    instance_ids: "{{ infrastructure_existing_vm.instances | map(attribute='instance_id') | list }}"
+    region: "{{ infrastructure_region }}"
+  when: infrastructure_existing_vm.instances | length > 0
+
+- name: Add public IP hosts to group
+  ansible.builtin.add_host:
+    groups: "{{ public_host_groups + ['public'] | default(['public']) }}"
+    name: "{{ item.public_ip_address }}"
+  loop: "{{ infrastructure_existing_vm.instances }}"
+  when: infrastructure_existing_vm.instances | length > 0
+
+- name: Add private IPs hosts to group
+  ansible.builtin.add_host:
+    groups: "{{ private_host_groups + ['private'] | default(['private']) }}"
+    name: "{{ item.private_ip_address }}"
+  loop: "{{ infrastructure_existing_vm.instances }}"
+  when: infrastructure_existing_vm.instances | length > 0
