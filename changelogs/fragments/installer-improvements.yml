@@ -3,4 +3,6 @@ minor_changes:
   - Update the installer unarchive process to avoid errors.
   - Update task labels to be more descriptive.
   - Changed include role statements to use FQRN.
+  - Added EDA server public IP address to the list of ALLOWED_HOSTS in EDA.
+  - Updated host group names for clarity.
 release_summary: Bug fixes and improvements.

@@ -55,11 +55,10 @@
 
 - name: Add public IP hosts to group
   ansible.builtin.add_host:
-    groups:
-      - public
+    groups: "{{ public_host_groups + ['public'] | default(['public']) }}"
     name: "{{ infrastructure_ec2_instance.instances[0].public_ip_address }}"
 
 - name: Add private IPs hosts to group
   ansible.builtin.add_host:
-    groups: "{{ host_groups + ['private'] | default(['aap']) }}"
+    groups: "{{ private_host_groups + ['private'] | default(['private']) }}"
     name: "{{ infrastructure_ec2_instance.instances[0].private_ip_address }}"

@@ -1,5 +1,5 @@
 ---
-- name: Create subnet group
+- name: Create database subnet group
   amazon.aws.rds_subnet_group:
     region: "{{ infrastructure_region }}"
     state: present
