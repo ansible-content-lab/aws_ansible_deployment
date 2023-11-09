@@ -1,0 +1,5 @@
+---
+release_summary: Improvements to the install steps to improve experience.
+minor_changes:
+  - Added ansible.cfg file with SSH args to keep connection open during AAP install.
+  - Added output steps to make it easier to find connection details after deployment.

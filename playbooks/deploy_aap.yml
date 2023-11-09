@@ -55,3 +55,36 @@
     - name: Run AAP role
       ansible.builtin.include_role:
         name: lab.aws_deployment.aap
+
+- name: Wrap up deployment
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Access Ansible Automation Controller (Load Balancer)
+      ansible.builtin.debug:
+        msg: "https://{{ infrastructure_lb.dns_name }}"
+      when:
+        - infrastructure_lb is defined
+        - infrastructure_lb.dns_name is defined
+
+    - name: Access Ansible Automation Controller (VM)
+      ansible.builtin.debug:
+        msg: "https://{{ groups.controller_public[0] }}"
+      when:
+        - infrastructure_lb is not defined
+
+    - name: Access Ansible Private Automation Hub (VM)
+      ansible.builtin.debug:
+        msg: "https://{{ groups.hub_public[0] }}"
+      when:
+        - groups.hub_public is defined
+        - groups.hub_public | length > 0
+
+    - name: Access Ansible Event Driven Automation (VM)
+      ansible.builtin.debug:
+        msg: "https://{{ groups.eda_public[0] }}"
+      when:
+        - groups.eda_public is defined
+        - groups.eda_public | length > 0
