@@ -4,7 +4,6 @@ quiet: false
 verbosity: 1
 
 skip_list:
-  - ignore-errors
   - package-latest
   - command-instead-of-shell
 
