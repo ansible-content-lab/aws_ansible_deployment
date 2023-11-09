@@ -1,59 +1,17 @@
 ---
-- name: Check if the execution node VMs are already provisioned
-  amazon.aws.ec2_instance_info:
-    filters:
-      "tag:purpose": ansible-automation-platform
-      "tag:environment": aap
-      "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
-      "tag:app": execution
-      "instance-state-name":
-        - pending
-        - running
-        - shutting-down
-        - stopping
-        - stopped
-    region: "{{ infrastructure_region }}"
-  register: infrastructure_existing_vm
-  tags:
-    - execution
-
-- name: Output number of existing VMs
-  ansible.builtin.debug:
-    msg: "Number of existing execution VMs: {{ infrastructure_existing_vm.instances | length }}"
-  when: 
-    - infrastructure_existing_vm.instances is defined
-  tags:
-    - execution
-
-- name: Ensure existing VMs are running
-  amazon.aws.ec2_instance:
-    state: started
-    instance_ids: "{{ infrastructure_existing_vm.instances | map(attribute='instance_id') | list }}"
-    region: "{{ infrastructure_region }}"
-  when: infrastructure_existing_vm.instances | length > 0
-  tags:
-    - execution
-
-- name: Add public IP hosts to group
-  when: infrastructure_existing_vm.instances | length > 0
-  ansible.builtin.add_host:
-    groups:
-      - public
-      - execution_public
-    name: "{{ item.public_ip_address }}"
-  loop: "{{ infrastructure_existing_vm.instances }}"
-  tags:
-    - execution
-
-- name: Add private IPs hosts to group
-  ansible.builtin.add_host:
-    groups:
-      - private
-      - execution_private
-    name: "{{ item.private_ip_address }}"
-  loop: "{{ infrastructure_existing_vm.instances }}"
-  tags:
-    - execution
+- name: Get existing VMs
+  block:
+    - name: Include get vms task
+      ansible.builtin.include_tasks: vms/get.yml
+      vars:
+        app_tag: execution
+        private_host_groups:
+          - aap
+          - execution_private
+        public_host_groups:
+          - execution_public
+      tags:
+        - execution
 
 - name: Set number of execution node VMs to create
   ansible.builtin.set_fact:
@@ -74,7 +32,7 @@
     subnet_index: "{{ lookup('ansible.utils.index_of', infrastructure_vpc_subnets, 'eq', 'execution', 'name') }}"
   block:
     - name: Include create vm task
-      ansible.builtin.include_tasks: vm.yml
+      ansible.builtin.include_tasks: vms/create.yml
       loop: "{{ query('sequence', 'start=1 end=' + (infrastructure_execution_vms_to_create | string)) }}"
       vars:
         instance_type: "{{ infrastructure_execution_shape }}"

@@ -1,72 +1,28 @@
 ---
-- name: Check if the controller VMs are already provisioned
-  amazon.aws.ec2_instance_info:
-    filters:
-      "tag:purpose": ansible-automation-platform
-      "tag:environment": aap
-      "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
-      "tag:app": controller
-      "instance-state-name":
-        - pending
-        - running
-        - shutting-down
-        - stopping
-        - stopped
-    region: "{{ infrastructure_region }}"
-  register: infrastructure_existing_vm
-  tags:
-    - controller
+- name: Get existing VMs
+  block:
+    - name: Include get vms task
+      ansible.builtin.include_tasks: vms/get.yml
+      vars:
+        app_tag: controller
+        private_host_groups:
+          - aap
+          - controller_private
+        public_host_groups:
+          - controller_public
+      tags:
+        - controller
 
-- name: Output number of existing VMs
-  ansible.builtin.debug:
-    msg: "Number of existing Controller VMs: {{ infrastructure_existing_vm.instances | length }}"
-  when: 
-    - infrastructure_existing_vm.instances is defined
-  tags:
-    - controller
-
-- name: Ensure existing VMs are running
-  amazon.aws.ec2_instance:
-    state: started
-    instance_ids: "{{ infrastructure_existing_vm.instances | map(attribute='instance_id') | list }}"
-    region: "{{ infrastructure_region }}"
-  when: infrastructure_existing_vm.instances | length > 0
-  tags:
-    - controller
-
-- name: Add public IP host to installer
-  when: |
-    (infrastructure_existing_vm is defined
-    and infrastructure_existing_vm.instances | length > 0)
-    and (groups.installer is not defined
-    or groups.installer | length == 0)
-  ansible.builtin.add_host:
-    groups:
-     - installer
-    name: "{{ infrastructure_existing_vm.instances[0].public_ip_address }}"
-  tags:
-    - controller
-  
-- name: Add public IP hosts to group
-  when: infrastructure_existing_vm.instances | length > 0
-  ansible.builtin.add_host:
-    groups:
-      - public
-      - controller_public
-    name: "{{ item.public_ip_address }}"
-  loop: "{{ infrastructure_existing_vm.instances }}"
-  tags:
-    - controller
-
-- name: Add private IPs hosts to group
-  ansible.builtin.add_host:
-    groups:
-      - private
-      - controller_private
-    name: "{{ item.private_ip_address }}"
-  loop: "{{ infrastructure_existing_vm.instances }}"
-  tags:
-    - controller
+    - name: Add public IP host to installer
+      when: |
+        (infrastructure_existing_vm is defined
+        and infrastructure_existing_vm.instances | length > 0)
+        and (groups.installer is not defined
+        or groups.installer | length == 0)
+      ansible.builtin.add_host:
+        groups:
+        - installer
+        name: "{{ infrastructure_existing_vm.instances[0].public_ip_address }}"
 
 - name: Set number of Controller VMs to create
   ansible.builtin.set_fact:
@@ -87,7 +43,7 @@
     subnet_index: "{{ lookup('ansible.utils.index_of', infrastructure_vpc_subnets, 'eq', 'controller', 'name') }}"
   block:
     - name: Include create vm task
-      ansible.builtin.include_tasks: vm.yml
+      ansible.builtin.include_tasks: vms/create.yml
       loop: "{{ query('sequence', 'start=1 end=' + (infrastructure_controller_vms_to_create | string)) }}"
       vars:
         instance_type: "{{ infrastructure_controller_shape }}"
