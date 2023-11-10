@@ -2,3 +2,4 @@
 release_summary: General updates and bug fixes
 minor_changes:
   - README updates.
+  - Added variable to control removing SSH key from install server regardless of installer outcome.
