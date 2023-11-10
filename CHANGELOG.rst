@@ -5,6 +5,20 @@ Aoc.Controller_Demo_Config Release Notes
 .. contents:: Topics
 
 
+v1.0.3
+======
+
+Release Summary
+---------------
+
+General updates and bug fixes
+
+Minor Changes
+-------------
+
+- Added variable to control removing SSH key from install server regardless of installer outcome.
+- README updates.
+
 v1.0.2
 ======
 

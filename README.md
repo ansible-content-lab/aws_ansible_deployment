@@ -97,13 +97,20 @@ infrastructure_region: us-east-1
 infrastructure_keypair_name: aws_test_key
 
 infrastructure_controller_instances: 2
-infrastructure_controller_ami: ami-0d56aee8074bef5d3
+infrastructure_controller_ami: ami-09537a20aeb55555
+infrastructure_controller_shape: m5a.xlarge
+
+infrastructure_execution_instances: 1
+infrastructure_execution_ami: ami-09537a20aeb55555
+infrastructure_execution_shape: m5a.xlarge
 
 infrastructure_hub_instances: 1
-infrastructure_hub_ami: ami-0d56aee8074bef5d3
+infrastructure_hub_ami: ami-09537a20aeb55555
+infrastructure_hub_shape: m5a.large
 
-infrastructure_eda_instances: 0
-infrastructure_eda_ami: ami-0d56aee8074bef5d3
+infrastructure_eda_instances: 1
+infrastructure_eda_ami: ami-09537a20aeb55555
+infrastructure_eda_controller_shape: m5a.xlarge
 
 infrastructure_db_username: ansible
 infrastructure_db_password: ansible_automation_platform_password
@@ -118,7 +125,6 @@ aap_installer_unarchive_folder_name: ansible-automation-platform-setup-2.4-2
 
 aap_installer_ssh_key: aws_test_key
 aap_installer_ssh_key_src: "~/.ssh/{{ aap_installer_ssh_key }}"
-aap_installer_ssh_key_dest: "/home/ec2-user/.ssh/{{ aap_installer_ssh_key }}"
 
 aap_run_installer: true
 aap_remove_installer_after_install: true

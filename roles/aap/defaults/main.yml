@@ -7,3 +7,4 @@ aap_ssh_path: /home/ec2-user/.ssh/
 aap_installer_ssh_key_dest: "{{ aap_ssh_path}}{{ aap_installer_ssh_key }}"
 aap_run_installer: true
 aap_remove_installer_after_install: true
+aap_remove_ssh_key_from_install_server: true

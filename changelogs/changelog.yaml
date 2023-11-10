@@ -34,3 +34,13 @@ releases:
     fragments:
     - install-changes.yml
     release_date: '2023-11-09'
+  1.0.3:
+    changes:
+      minor_changes:
+      - Added variable to control removing SSH key from install server regardless
+        of installer outcome.
+      - README updates.
+      release_summary: General updates and bug fixes
+    fragments:
+    - bugfixes2.yml
+    release_date: '2023-11-10'
