@@ -1,0 +1,14 @@
+[allowlist]
+  description = "Global Allowlist"
+
+  # Ignore based on any subset of the file path
+  paths = [
+    '''roles\/aap\/templates\/config.j2$''',
+    '''roles\/aap\/templates\/inventory.j2$''',
+  ]
+        
+  # Ignore based on any subset of the line
+  # regexes = [
+  #  # Ignore lines containing pickles
+  #  '''pickles''',
+  #]
