@@ -1,5 +1,0 @@
----
-release_summary: Updates to tagging.
-minor_changes:
-  - Updated AWS tagging to allow for user defined tags along with collection tag opinions.
-  - Added Ansible tags where missing to infrastructure role.

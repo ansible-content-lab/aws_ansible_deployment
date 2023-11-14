@@ -44,3 +44,13 @@ releases:
     fragments:
     - bugfixes2.yml
     release_date: '2023-11-10'
+  1.0.4:
+    changes:
+      minor_changes:
+      - Added Ansible tags where missing to infrastructure role.
+      - Updated AWS tagging to allow for user defined tags along with collection tag
+        opinions.
+      release_summary: Updates to tagging.
+    fragments:
+    - tags.yml
+    release_date: '2023-11-14'
