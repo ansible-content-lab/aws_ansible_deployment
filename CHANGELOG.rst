@@ -5,6 +5,20 @@ Aoc.Controller_Demo_Config Release Notes
 .. contents:: Topics
 
 
+v1.0.4
+======
+
+Release Summary
+---------------
+
+Updates to tagging.
+
+Minor Changes
+-------------
+
+- Added Ansible tags where missing to infrastructure role.
+- Updated AWS tagging to allow for user defined tags along with collection tag opinions.
+
 v1.0.3
 ======
 

@@ -96,6 +96,9 @@ You may save this as any file, but later examples will use a file called `vars.y
 infrastructure_region: us-east-1
 infrastructure_keypair_name: aws_test_key
 
+infrastructure_tags:
+  deployment_owner: scott
+
 infrastructure_controller_instances: 2
 infrastructure_controller_ami: ami-09537a20aeb55555
 infrastructure_controller_shape: m5a.xlarge
@@ -129,6 +132,8 @@ aap_installer_ssh_key_src: "~/.ssh/{{ aap_installer_ssh_key }}"
 aap_run_installer: true
 aap_remove_installer_after_install: true
 ```
+
+More tags can be explored in the [roles/infrastructure/defaults/main.yml](https://github.com/ansible-content-lab/aws_deployment/blob/main/roles/infrastructure/defaults/main.yml) file.
 
 ### AWS Credentials
 

@@ -1,18 +1,26 @@
 ---
 - name: Create VPC
   block:
+    # - name: Create VPC facts
+    #   ansible.builtin.set_fact:
+    #     vpc_additional_tags:
+    #       Name: "aap-infrastructure-{{ deployment_id }}-vpc"
+    #     vpc_tags: "{{ vpc_additional_tags | combine(infrastructure_tags) }}"
+    #   tags:
+    #     - network
+
     - name: Create VPC
+      vars:
+        vpc_additional_tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-vpc"
+        vpc_tags: "{{ vpc_additional_tags | combine(infrastructure_tags) }}"
       amazon.aws.ec2_vpc_net:
         name: "aap-infrastructure-{{ deployment_id }}-vpc"
         cidr_block: "{{ infrastructure_vpc_cidr }}"
         purge_tags: false
         region: "{{ infrastructure_region }}"
         state: present
-        tags:
-          Name: "aap-infrastructure-{{ deployment_id }}-vpc"
-          purpose: ansible-automation-platform
-          environment: aap
-          deployment: "aap-infrastructure-{{ deployment_id }}"
+        tags: "{{ vpc_tags }}"
       register: infrastructure_vpc
       tags:
         - network
@@ -27,17 +35,17 @@
 - name: Create subnets
   block:
     - name: Create subnets
+      vars:
+        subnet_additional_tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-subnet-{{ item.name }}"
+        subnet_tags: "{{ subnet_additional_tags | combine(infrastructure_tags) }}"
       amazon.aws.ec2_vpc_subnet:
         vpc_id: "{{ infrastructure_vpc_id }}"
         cidr: "{{ item.cidr }}"
         region: "{{ infrastructure_region }}"
         az: "{{ item.az }}"
         state: present
-        tags:
-          Name: "aap-infrastructure-{{ deployment_id }}-subnet-{{ item.name }}"
-          purpose: ansible-automation-platform
-          environment: aap
-          deployment: "aap-infrastructure-{{ deployment_id }}"
+        tags: "{{ subnet_tags }}"
       loop: "{{ infrastructure_vpc_subnets }}"
       register: infrastructure_subnets
       tags:
@@ -54,15 +62,15 @@
   when: infrastructure_igw_id is not defined
   block:
     - name: Create igw
+      vars:
+        igw_additional_tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-igw"
+        igw_tags: "{{ igw_additional_tags | combine(infrastructure_tags) }}"
       amazon.aws.ec2_vpc_igw:
         vpc_id: "{{ infrastructure_vpc_id }}"
         region: "{{ infrastructure_region }}"
         state: present
-        tags:
-          Name: "aap-infrastructure-{{ deployment_id }}-igw"
-          purpose: ansible-automation-platform
-          environment: aap
-          deployment: "aap-infrastructure-{{ deployment_id }}"
+        tags: "{{ igw_tags }}"
       register: infrastructure_igw
       tags:
         - network
@@ -78,6 +86,10 @@
   when: infrastructure_security_group_id is not defined
   block:
     - name: Create security group
+      vars:
+        sg_additional_tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-sg"
+        sg_tags: "{{ sg_additional_tags | combine(infrastructure_tags) }}"
       amazon.aws.ec2_security_group:
         name: "aap-infrastructure-{{ deployment_id }}-sg"
         description: AAP security group
@@ -111,11 +123,7 @@
           - proto: all
             cidr_ip: 0.0.0.0/0
             rule_desc: allow all outbound
-        tags:
-          Name: "aap-infrastructure-{{ deployment_id }}-sg"
-          purpose: ansible-automation-platform
-          environment: aap
-          deployment: "aap-infrastructure-{{ deployment_id }}"
+        tags: "{{ sg_tags }}"
       register: infrastructure_security_group
       tags:
         - network
@@ -132,6 +140,10 @@
   when: infrastructure_route_table_id is not defined
   block:
     - name: Create route table
+      vars:
+        rt_additional_tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-rt"
+        rt_tags: "{{ rt_additional_tags | combine(infrastructure_tags) }}"
       amazon.aws.ec2_vpc_route_table:
         region: "{{ infrastructure_region }}"
         routes:
@@ -139,11 +151,7 @@
             gateway_id: "{{ infrastructure_igw_id }}"
         vpc_id: "{{ infrastructure_vpc_id }}"
         subnets: "{{ infrastructure_subnet_ids }}"
-        tags:
-          Name: "aap-infrastructure-{{ deployment_id }}-rt"
-          purpose: ansible-automation-platform
-          environment: aap
-          deployment: "aap-infrastructure-{{ deployment_id }}"
+        tags: "{{ rt_tags }}"
       register: infrastructure_route_table
       tags:
         - network

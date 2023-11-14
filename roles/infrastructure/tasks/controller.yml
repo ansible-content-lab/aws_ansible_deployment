@@ -23,6 +23,8 @@
         groups:
         - installer
         name: "{{ infrastructure_existing_vm.instances[0].public_ip_address }}"
+      tags:
+        - controller
 
 - name: Set number of Controller VMs to create
   ansible.builtin.set_fact:
@@ -77,8 +79,6 @@
     - name: Get all controller VMs
       amazon.aws.ec2_instance_info:
         filters:
-          "tag:purpose": ansible-automation-platform
-          "tag:environment": aap
           "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
           "tag:app": controller
           "instance-state-name":
@@ -93,6 +93,10 @@
         - controller
 
     - name: Add existing VMs to lb target group
+      vars:
+        vm_lbt_additional_tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-lbtg"
+        vm_lbt_tags: "{{ vm_lbt_additional_tags | combine(infrastructure_tags) }}"
       when:
         - infrastructure_create_controller_lb
         - infrastructure_existing_vm is defined
@@ -100,12 +104,18 @@
       ansible.builtin.set_fact:
         infrastructure_lb_targets: "{{ (infrastructure_lb_targets | default([])) + [{\"Id\": item.instance_id, \"Port\": 443}] }}"
       loop: "{{ infrastructure_existing_vm.instances }}"
+      tags:
+        - controller
 
     - name: Create a target group for load balancer
       when:
         - infrastructure_create_controller_lb
         - infrastructure_lb_targets is defined
         - infrastructure_lb_targets | length > 0
+      vars:
+        vm_lbtg_additional_tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-lbtg"
+        vm_lbtg_tags: "{{ vm_lbtg_additional_tags | combine(infrastructure_tags) }}"
       community.aws.elb_target_group:
         region: "{{ infrastructure_region }}"
         name: "aap-infrastructure-{{ deployment_id }}-lbtg"
@@ -118,12 +128,10 @@
         # target_type: ip
         targets: "{{ infrastructure_lb_targets }}"
         wait: false
-        tags:
-          Name: "aap-infrastructure-{{ deployment_id }}-lbtg"
-          purpose: ansible-automation-platform
-          environment: aap
-          deployment: "aap-infrastructure-{{ deployment_id }}"
+        tags: "{{ vm_lbtg_tags }}"
       register: infrastructure_lb_target_group
+      tags:
+        - controller
 
     - name: Upload a certificate
       when:
@@ -133,18 +141,20 @@
         - infrastructure_cert_key_path is defined
         - infrastructure_cert_key_path | length > 0
         - infrastructure_cert_domain_name is defined
+      vars:
+        vm_cert_additional_tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-cert"
+        vm_cert_tags: "{{ vm_cert_additional_tags | combine(infrastructure_tags) }}"
       community.aws.aws_acm:
         certificate: "{{ lookup('file', infrastructure_cert_path) }}"
         private_key: "{{ lookup('file', infrastructure_cert_key_path) }}"
         domain_name: "{{ infrastructure_cert_domain_name }}"
         name_tag: "aap-infrastructure-{{ deployment_id }}-cert"
         region: "{{ infrastructure_region }}"
-        tags:
-          Name: "aap-infrastructure-{{ deployment_id }}-cert"
-          purpose: ansible-automation-platform
-          environment: aap
-          deployment: "aap-infrastructure-{{ deployment_id }}"
+        tags: "{{ vm_cert_tags }}"
       register: infrastructure_cert
+      tags:
+        - controller
 
     - name: Create Controller load balancer
       when:
@@ -154,6 +164,9 @@
       vars:
         controller_subnet_index: "{{ lookup('ansible.utils.index_of', infrastructure_vpc_subnets, 'eq', 'controller', 'name') }}"
         ee_subnet_index: "{{ lookup('ansible.utils.index_of', infrastructure_vpc_subnets, 'eq', 'execution', 'name') }}"
+        vm_lb_additional_tags:
+          Name: "aap-infrastructure-{{ deployment_id }}-lb"
+        vm_lb_tags: "{{ vm_lb_additional_tags | combine(infrastructure_tags) }}"
       amazon.aws.elb_application_lb:
         name: "aap-infrastructure-{{ deployment_id }}-lb"
         region: "{{ infrastructure_region }}"
@@ -185,12 +198,10 @@
         ip_address_type: ipv4
         scheme: "{{ infrastructure_lb_scheme }}"
         state: present
-        tags:
-          Name: "aap-infrastructure-{{ deployment_id }}-lb"
-          purpose: ansible-automation-platform
-          environment: aap
-          deployment: "aap-infrastructure-{{ deployment_id }}"
+        tags: "{{ vm_lb_tags }}"
       register: infrastructure_lb
+      tags:
+        - controller
 
     - name: Set LB stats
       ansible.builtin.set_stats:
@@ -198,3 +209,5 @@
           load_balancer_arn: "{{ infrastructure_lb.load_balancer_arn }}"
           load_balancer_dns: "{{ infrastructure_lb.dns_name }}"
         per_host: false
+      tags:
+        - controller

@@ -1,0 +1,38 @@
+---
+- name: Create a deployment ID
+  ansible.builtin.set_fact:
+    deployment_id: "{{ query('community.general.random_string', upper=false, numbers=false, special=false) | first }}"
+  register: infrastructure_facts
+  when:
+    - deployment_id is not defined
+  tags:
+    - ami
+    - network
+    - database
+    - controller
+    - hub
+    - eda
+
+- name: Set deployment stat
+  ansible.builtin.set_stats:
+    data: 
+      deployment_id: "{{ deployment_id }}"
+    per_host: false
+  tags:
+    - ami
+    - network
+    - database
+    - controller
+    - hub
+    - eda
+
+- name: Print deployment ID
+  ansible.builtin.debug:
+    msg: "Deployment ID: {{ deployment_id }}"
+  tags:
+    - ami
+    - network
+    - database
+    - controller
+    - hub
+    - eda

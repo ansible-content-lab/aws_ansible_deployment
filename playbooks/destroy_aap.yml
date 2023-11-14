@@ -8,8 +8,8 @@
     - name: Check if the controller VMs are already provisioned
       amazon.aws.ec2_instance_info:
         filters:
-          "tag:purpose": ansible-automation-platform
-          "tag:environment": aap
+          "tag:purpose": automation
+          "tag:environment": ansible-automation-platform
           "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
           "instance-state-name":
             - pending

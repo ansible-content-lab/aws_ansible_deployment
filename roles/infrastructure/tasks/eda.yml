@@ -21,6 +21,8 @@
       when:
         - infrastructure_existing_vm.instances is defined
         - infrastructure_existing_vm.instances | length > 0
+      tags:
+        - eda
 
 - name: Set number of eda VMs to create
   ansible.builtin.set_fact:
@@ -62,3 +64,5 @@
         groups:
           - eda_public
         name: "{{ infrastructure_ec2_instance.instances[0].public_ip_address }}"
+      tags:
+        - eda

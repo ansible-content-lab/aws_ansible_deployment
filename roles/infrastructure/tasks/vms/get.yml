@@ -2,8 +2,6 @@
 - name: "Check if the {{ app_tag }} VMs are already provisioned"
   amazon.aws.ec2_instance_info:
     filters:
-      "tag:purpose": ansible-automation-platform
-      "tag:environment": aap
       "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
       "tag:app": "{{ app_tag }}"
       "instance-state-name":
@@ -14,12 +12,16 @@
         - stopped
     region: "{{ infrastructure_region }}"
   register: infrastructure_existing_vm
+  tags:
+    - controller
 
 - name: Output number of existing VMs
   ansible.builtin.debug:
     msg: "Number of existing {{ app_tag }} VMs: {{ infrastructure_existing_vm.instances | length }}"
   when:
     - infrastructure_existing_vm.instances is defined
+  tags:
+    - controller
 
 - name: Ensure existing VMs are running
   amazon.aws.ec2_instance:
@@ -27,6 +29,8 @@
     instance_ids: "{{ infrastructure_existing_vm.instances | map(attribute='instance_id') | list }}"
     region: "{{ infrastructure_region }}"
   when: infrastructure_existing_vm.instances | length > 0
+  tags:
+    - controller
 
 - name: Add public IP hosts to group
   ansible.builtin.add_host:
@@ -34,6 +38,8 @@
     name: "{{ item.public_ip_address }}"
   loop: "{{ infrastructure_existing_vm.instances }}"
   when: infrastructure_existing_vm.instances | length > 0
+  tags:
+    - controller
 
 - name: Add private IPs hosts to group
   ansible.builtin.add_host:
@@ -41,3 +47,5 @@
     name: "{{ item.private_ip_address }}"
   loop: "{{ infrastructure_existing_vm.instances }}"
   when: infrastructure_existing_vm.instances | length > 0
+  tags:
+    - controller

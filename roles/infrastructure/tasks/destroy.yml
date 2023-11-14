@@ -4,8 +4,6 @@
     region: "{{ infrastructure_region }}"
     state: absent
     filters:
-      "tag:purpose": ansible-automation-platform
-      "tag:environment": aap
       "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
       "instance-state-name":
         - pending
@@ -70,8 +68,6 @@
   amazon.aws.ec2_vpc_net_info:
     region: "{{ infrastructure_region }}"
     filters:
-      "tag:purpose": ansible-automation-platform
-      "tag:environment": aap
       "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
   register: vpcs
 
@@ -79,8 +75,6 @@
   amazon.aws.ec2_vpc_subnet_info:
     region: "{{ infrastructure_region }}"
     filters:
-      "tag:purpose": ansible-automation-platform
-      "tag:environment": aap
       "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
   register: subnets
 
@@ -112,8 +106,6 @@
   amazon.aws.ec2_security_group_info:
     region: "{{ infrastructure_region }}"
     filters:
-      "tag:purpose": ansible-automation-platform
-      "tag:environment": aap
       "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
   register: sgs
 
@@ -132,8 +124,6 @@
   amazon.aws.ec2_vpc_route_table_info:
     region: "{{ infrastructure_region }}"
     filters:
-      "tag:purpose": ansible-automation-platform
-      "tag:environment": aap
       "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
   register: rts
 
