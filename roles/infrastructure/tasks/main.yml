@@ -11,13 +11,10 @@
     - hub
     - eda
 
-- name: Create a deployment ID
-  ansible.builtin.set_fact:
-    deployment_id: "{{ query('community.general.random_string', upper=false, numbers=false, special=false) | first }}"
-  register: infrastructure_facts
-  when:
-    - deployment_id is not defined
+- name: Create deployment details
+  ansible.builtin.include_tasks: deployment.yml
   tags:
+    - tags
     - ami
     - network
     - database
@@ -25,23 +22,10 @@
     - hub
     - eda
 
-- name: Set deployment stat
-  ansible.builtin.set_stats:
-    data: 
-      deployment_id: "{{ deployment_id }}"
-    per_host: false
+- name: Set tag variables
+  ansible.builtin.include_tasks: tags.yml
   tags:
-    - ami
-    - network
-    - database
-    - controller
-    - hub
-    - eda
-
-- name: Print deployment ID
-  ansible.builtin.debug:
-    msg: "Deployment ID: {{ deployment_id }}"
-  tags:
+    - tags
     - ami
     - network
     - database
@@ -50,7 +34,7 @@
     - eda
 
 - name: Configure Network
-  ansible.builtin.import_tasks: network.yml
+  ansible.builtin.include_tasks: network.yml
   tags:
     - network
 
@@ -69,31 +53,31 @@
     - eda
 
 - name: Create RDS database
-  ansible.builtin.import_tasks: database.yml
+  ansible.builtin.include_tasks: database.yml
   tags:
     - database
 
 - name: Configure Amazon Machine Images (AMI)
-  ansible.builtin.import_tasks: ami.yml
+  ansible.builtin.include_tasks: ami.yml
   tags:
     - ami
 
 - name: Create Controller VMs
-  ansible.builtin.import_tasks: controller.yml
+  ansible.builtin.include_tasks: controller.yml
   tags:
     - controller
 
 - name: Create Execution Node VMs
-  ansible.builtin.import_tasks: execution.yml
+  ansible.builtin.include_tasks: execution.yml
   tags:
     - execution
 
 - name: Create Hub VMs
-  ansible.builtin.import_tasks: hub.yml
+  ansible.builtin.include_tasks: hub.yml
   tags:
     - hub
 
 - name: Create EDA VMs
-  ansible.builtin.import_tasks: eda.yml
+  ansible.builtin.include_tasks: eda.yml
   tags:
     - eda

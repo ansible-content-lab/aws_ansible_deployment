@@ -1,21 +1,25 @@
 ---
 - name: Create database subnet group
+  vars:
+    db_sng_additional_tags:
+      Name: "aap-infrastructure-{{ deployment_id }}-subnet-group"
+    db_sng_tags: "{{ db_sng_additional_tags | combine(infrastructure_tags) }}"
   amazon.aws.rds_subnet_group:
     region: "{{ infrastructure_region }}"
     state: present
     name: "aap-infrastructure-{{ deployment_id }}-subnet-group"
     description: Ansible Automation Platform Subnet Group
     subnets: "{{ infrastructure_subnet_ids }}"
-    tags:
-      Name: "aap-infrastructure-{{ deployment_id }}-subnet-group"
-      purpose: ansible-automation-platform
-      environment: aap
-      deployment: "aap-infrastructure-{{ deployment_id }}"
+    tags: "{{ db_sng_tags }}"
   register: infrastructure_db_subnet_group
   tags:
     - database
 
 - name: Create Controller RDS instance
+  vars:
+    controller_db_additional_tags:
+      Name: "aap-infrastructure-{{ deployment_id }}-controller-db"
+    controller_db_tags: "{{ controller_db_additional_tags | combine(infrastructure_tags) }}"
   amazon.aws.rds_instance:
     region: "{{ infrastructure_region }}"
     id: "aap-infrastructure-{{ deployment_id }}-controller-db"
@@ -36,17 +40,17 @@
     vpc_security_group_ids: 
       - "{{ infrastructure_security_group.group_id }}"
     db_subnet_group_name: "{{ infrastructure_db_subnet_group.subnet_group.name }}"
-    tags:
-      Name: "aap-infrastructure-{{ deployment_id }}-db"
-      purpose: ansible-automation-platform
-      environment: aap
-      deployment: "aap-infrastructure-{{ deployment_id }}"
+    tags: "{{ controller_db_tags }}"
   tags:
     - database
   register: infrastructure_controller_db
 
 - name: Create Hub RDS instance
   when: infrastructure_hub_instances > 0
+  vars:
+    hub_db_additional_tags:
+      Name: "aap-infrastructure-{{ deployment_id }}-hub-db"
+    hub_db_tags: "{{ hub_db_additional_tags | combine(infrastructure_tags) }}"
   amazon.aws.rds_instance:
     region: "{{ infrastructure_region }}"
     id: "aap-infrastructure-{{ deployment_id }}-hub-db"
@@ -67,17 +71,17 @@
     vpc_security_group_ids: 
       - "{{ infrastructure_security_group.group_id }}"
     db_subnet_group_name: "{{ infrastructure_db_subnet_group.subnet_group.name }}"
-    tags:
-      Name: "aap-infrastructure-{{ deployment_id }}-hub-db"
-      purpose: ansible-automation-platform
-      environment: aap
-      deployment: "aap-infrastructure-{{ deployment_id }}"
+    tags: "{{ hub_db_tags }}"
   tags:
     - database
   register: infrastructure_hub_db
 
 - name: Create EDA RDS instance
   when: infrastructure_eda_instances > 0
+  vars:
+    eda_db_additional_tags:
+      Name: "aap-infrastructure-{{ deployment_id }}-eda-db"
+    eda_db_tags: "{{ eda_db_additional_tags | combine(infrastructure_tags) }}"
   amazon.aws.rds_instance:
     region: "{{ infrastructure_region }}"
     id: "aap-infrastructure-{{ deployment_id }}-eda-db"
@@ -98,11 +102,7 @@
     vpc_security_group_ids: 
       - "{{ infrastructure_security_group.group_id }}"
     db_subnet_group_name: "{{ infrastructure_db_subnet_group.subnet_group.name }}"
-    tags:
-      Name: "aap-infrastructure-{{ deployment_id }}-eda-db"
-      purpose: ansible-automation-platform
-      environment: aap
-      deployment: "aap-infrastructure-{{ deployment_id }}"
+    tags: "{{ eda_db_tags }}"
   tags:
     - database
   register: infrastructure_eda_db
@@ -114,3 +114,5 @@
       infrastructure_hub_db_host: "{{ infrastructure_hub_db.endpoint.address | default(omit) }}"
       infrastructure_eda_db_host: "{{ infrastructure_eda_db.endpoint.address | default(omit) }}"
     per_host: false
+  tags:
+    - database

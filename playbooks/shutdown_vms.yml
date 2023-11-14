@@ -9,8 +9,6 @@
       amazon.aws.ec2_instance:
         state: stopped
         filters:
-          "tag:purpose": ansible-automation-platform
-          "tag:environment": aap
           "tag:deployment": "aap-infrastructure-{{ deployment_id }}"
           "instance-state-name":
             - pending

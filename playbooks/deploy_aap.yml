@@ -8,6 +8,14 @@
     - name: Deploy Infrastructure
       ansible.builtin.include_role:
         name: lab.aws_deployment.infrastructure
+      tags:
+        - tags
+        - ami
+        - network
+        - database
+        - controller
+        - hub
+        - eda
 
     - name: Wait 10 mins for all VMs to become available
       ansible.builtin.wait_for:
@@ -27,16 +35,28 @@
         username: "{{ aap_red_hat_username }}"
         password: "{{ aap_red_hat_password }}"
         auto_attach: true
+      tags:
+        - controller
+        - hub
+        - eda
 
     - name: Ensure rhsm is managing repos
       ansible.builtin.command: sudo subscription-manager config --rhsm.manage_repos=1
       register: rhsp
       failed_when: rhsp.rc == 1
+      tags:
+        - controller
+        - hub
+        - eda
 
     - name: Upgrade all packages
       ansible.builtin.dnf:
         name: "*"
         state: latest
+      tags:
+        - controller
+        - hub
+        - eda
 
 - name: Install AAP
   hosts: installer
