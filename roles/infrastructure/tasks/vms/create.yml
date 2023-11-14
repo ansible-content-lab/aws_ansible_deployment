@@ -20,7 +20,7 @@
     vm_additional_tags:
       Name: "{{ vm_name }}"
       app: "{{ app_tag | default('') }}"
-    vm_tags: "{{ vm_additional_tags | combine(infrastructure_tags) }}"
+    vm_tags: "{{ vm_additional_tags | combine(_infrastructure_tags) }}"
   amazon.aws.ec2_instance:
     network:
       assign_public_ip: "{{ infrastructure_assign_public_ip }}"

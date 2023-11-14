@@ -96,7 +96,7 @@
       vars:
         vm_lbt_additional_tags:
           Name: "aap-infrastructure-{{ deployment_id }}-lbtg"
-        vm_lbt_tags: "{{ vm_lbt_additional_tags | combine(infrastructure_tags) }}"
+        vm_lbt_tags: "{{ vm_lbt_additional_tags | combine(_infrastructure_tags) }}"
       when:
         - infrastructure_create_controller_lb
         - infrastructure_existing_vm is defined
@@ -115,7 +115,7 @@
       vars:
         vm_lbtg_additional_tags:
           Name: "aap-infrastructure-{{ deployment_id }}-lbtg"
-        vm_lbtg_tags: "{{ vm_lbtg_additional_tags | combine(infrastructure_tags) }}"
+        vm_lbtg_tags: "{{ vm_lbtg_additional_tags | combine(_infrastructure_tags) }}"
       community.aws.elb_target_group:
         region: "{{ infrastructure_region }}"
         name: "aap-infrastructure-{{ deployment_id }}-lbtg"
@@ -144,7 +144,7 @@
       vars:
         vm_cert_additional_tags:
           Name: "aap-infrastructure-{{ deployment_id }}-cert"
-        vm_cert_tags: "{{ vm_cert_additional_tags | combine(infrastructure_tags) }}"
+        vm_cert_tags: "{{ vm_cert_additional_tags | combine(_infrastructure_tags) }}"
       community.aws.aws_acm:
         certificate: "{{ lookup('file', infrastructure_cert_path) }}"
         private_key: "{{ lookup('file', infrastructure_cert_key_path) }}"
@@ -166,7 +166,7 @@
         ee_subnet_index: "{{ lookup('ansible.utils.index_of', infrastructure_vpc_subnets, 'eq', 'execution', 'name') }}"
         vm_lb_additional_tags:
           Name: "aap-infrastructure-{{ deployment_id }}-lb"
-        vm_lb_tags: "{{ vm_lb_additional_tags | combine(infrastructure_tags) }}"
+        vm_lb_tags: "{{ vm_lb_additional_tags | combine(_infrastructure_tags) }}"
       amazon.aws.elb_application_lb:
         name: "aap-infrastructure-{{ deployment_id }}-lb"
         region: "{{ infrastructure_region }}"

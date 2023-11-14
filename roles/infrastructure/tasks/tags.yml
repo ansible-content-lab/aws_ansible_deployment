@@ -6,22 +6,10 @@
       environment: ansible-automation-platform
       deployment: "aap-infrastructure-{{ deployment_id }}"
   tags:
-    - tags
-    - ami
-    - network
-    - database
-    - controller
-    - hub
-    - eda
+    - always
 
 - name: Merge persistent tags with user defined tags
   ansible.builtin.set_fact:
-    infrastructure_tags: "{{ infrastructure_tags | combine(persistent_tags) }}"
+    _infrastructure_tags: "{{ infrastructure_tags | combine(persistent_tags) }}"
   tags:
-    - tags
-    - ami
-    - network
-    - database
-    - controller
-    - hub
-    - eda
+    - always

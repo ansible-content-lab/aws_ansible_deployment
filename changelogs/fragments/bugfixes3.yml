@@ -1,0 +1,4 @@
+---
+release_summary: Bug fixes
+minor_changes:
+  - Prevent user defined tags from overwriting persistent tags.
