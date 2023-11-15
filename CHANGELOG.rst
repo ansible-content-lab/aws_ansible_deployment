@@ -5,6 +5,19 @@ Aoc.Controller_Demo_Config Release Notes
 .. contents:: Topics
 
 
+v1.0.5
+======
+
+Release Summary
+---------------
+
+Bug fixes
+
+Minor Changes
+-------------
+
+- Prevent user defined tags from overwriting persistent tags.
+
 v1.0.4
 ======
 

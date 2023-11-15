@@ -5,33 +5,17 @@
       - infrastructure_controller_instances > 0
     msg: This tool must install at least one instance of Ansible Automation Controller
   tags:
-    - network
-    - database
-    - controller
-    - hub
-    - eda
+    - always
 
 - name: Create deployment details
   ansible.builtin.include_tasks: deployment.yml
   tags:
-    - tags
-    - ami
-    - network
-    - database
-    - controller
-    - hub
-    - eda
+    - always
 
 - name: Set tag variables
   ansible.builtin.include_tasks: tags.yml
   tags:
-    - tags
-    - ami
-    - network
-    - database
-    - controller
-    - hub
-    - eda
+    - always
 
 - name: Configure Network
   ansible.builtin.include_tasks: network.yml
@@ -46,11 +30,7 @@
       - infrastructure_security_group_id is defined and (infrastructure_security_group_id | length > 0)
     msg: Network variables are either missing, or an existing deployment could not be found. Set the proper network variables before proceeding.
   tags:
-    - network
-    - database
-    - controller
-    - hub
-    - eda
+    - always
 
 - name: Create RDS database
   ansible.builtin.include_tasks: database.yml

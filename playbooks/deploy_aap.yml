@@ -9,13 +9,7 @@
       ansible.builtin.include_role:
         name: lab.aws_deployment.infrastructure
       tags:
-        - tags
-        - ami
-        - network
-        - database
-        - controller
-        - hub
-        - eda
+        - always
 
     - name: Wait 10 mins for all VMs to become available
       ansible.builtin.wait_for:
@@ -23,6 +17,10 @@
         port: 22
         timeout: 600
       loop: "{{ groups.public }}"
+      tags:
+        - controller
+        - hub
+        - eda
 
 - name: Ensure VMs are up-to-date
   hosts: public
@@ -75,6 +73,10 @@
     - name: Run AAP role
       ansible.builtin.include_role:
         name: lab.aws_deployment.aap
+      tags:
+        - controller
+        - hub
+        - eda
 
 - name: Wrap up deployment
   hosts: localhost
@@ -88,12 +90,20 @@
       when:
         - infrastructure_lb is defined
         - infrastructure_lb.dns_name is defined
+      tags:
+        - controller
+        - hub
+        - eda
 
     - name: Access Ansible Automation Controller (VM)
       ansible.builtin.debug:
         msg: "https://{{ groups.controller_public[0] }}"
       when:
         - infrastructure_lb is not defined
+      tags:
+        - controller
+        - hub
+        - eda
 
     - name: Access Ansible Private Automation Hub (VM)
       ansible.builtin.debug:
@@ -101,6 +111,10 @@
       when:
         - groups.hub_public is defined
         - groups.hub_public | length > 0
+      tags:
+        - controller
+        - hub
+        - eda
 
     - name: Access Ansible Event Driven Automation (VM)
       ansible.builtin.debug:
@@ -108,3 +122,7 @@
       when:
         - groups.eda_public is defined
         - groups.eda_public | length > 0
+      tags:
+        - controller
+        - hub
+        - eda
