@@ -54,3 +54,11 @@ releases:
     fragments:
     - tags.yml
     release_date: '2023-11-14'
+  1.0.5:
+    changes:
+      minor_changes:
+      - Prevent user defined tags from overwriting persistent tags.
+      release_summary: Bug fixes
+    fragments:
+    - bugfixes3.yml
+    release_date: '2023-11-15'
