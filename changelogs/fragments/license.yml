@@ -1,0 +1,4 @@
+---
+release_summary: Update the license to align with AAP
+minor_changes:
+  - Change license to GPLv3.
