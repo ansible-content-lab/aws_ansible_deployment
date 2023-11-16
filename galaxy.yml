@@ -17,7 +17,7 @@ readme: README.md
 # A list of the collection's content authors. Can be just the name or in the format 'Full Name <email> (url)
 # @nicks:irc/im.site#channel'
 authors:
-- Scott Harwell <sharwell@redhat.com>
+  - AoC <ansible-on-clouds-squad@redhat.com>
 
 ### OPTIONAL but strongly recommended
 # A short summary description of the collection
@@ -42,7 +42,7 @@ dependencies:
   amazon.aws: '>=6.5.0'
   ansible.utils: '>=2.11.0'
   community.aws: '>=6.3.0'
-  community.general: '>=8.0.0' 
+  community.general: '>=8.0.0'
 
 # The URL of the originating SCM repository
 repository: https://github.com/ansible-content-lab/aws_deployment
