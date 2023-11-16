@@ -5,6 +5,19 @@ Aoc.Controller_Demo_Config Release Notes
 .. contents:: Topics
 
 
+v1.0.6
+======
+
+Release Summary
+---------------
+
+Update the license to align with AAP
+
+Minor Changes
+-------------
+
+- Change license to GPLv3.
+
 v1.0.5
 ======
 

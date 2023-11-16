@@ -62,3 +62,11 @@ releases:
     fragments:
     - bugfixes3.yml
     release_date: '2023-11-15'
+  1.0.6:
+    changes:
+      minor_changes:
+      - Change license to GPLv3.
+      release_summary: Update the license to align with AAP
+    fragments:
+    - license.yml
+    release_date: '2023-11-16'
