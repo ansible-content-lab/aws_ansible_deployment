@@ -2,3 +2,4 @@
 release_summary: Update the deployment so that a single RDS instance is used for all AAP apps.
 minor_changes:
   - Update DB logic to account for a single RDS instance.
+  - Update precommit dependencies
