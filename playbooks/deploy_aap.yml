@@ -66,7 +66,7 @@
     aap_hub_hosts: "{{ groups.hub_private | default('') }}"
     aap_eda_hosts: "{{ groups.eda_private | default('') }}"
     aap_eda_allowed_hostnames: "{{ (groups.eda_public | default([])) | join(',') }}"
-    aap_controller_db_host: "{{ hostvars.localhost.infrastructure_db.endpoint.address }}"
+    aap_db_host: "{{ hostvars.localhost.infrastructure_db.endpoint.address }}"
   tasks:
     - name: Run AAP role
       ansible.builtin.include_role:
