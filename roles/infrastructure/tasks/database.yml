@@ -15,104 +15,32 @@
   tags:
     - database
 
-- name: Create Controller RDS instance
+- name: Create RDS instance
   vars:
-    controller_db_additional_tags:
-      Name: "aap-infrastructure-{{ deployment_id }}-controller-db"
-    controller_db_tags: "{{ controller_db_additional_tags | combine(_infrastructure_tags) }}"
+    db_additional_tags:
+      Name: "aap-infrastructure-{{ deployment_id }}-db"
+    db_tags: "{{ db_additional_tags | combine(_infrastructure_tags) }}"
   amazon.aws.rds_instance:
     region: "{{ infrastructure_region }}"
     id: "aap-infrastructure-{{ deployment_id }}-controller-db"
     state: present
     engine: postgres
     db_name: controller
-    engine_version: "{{ infrastructure_controller_db_engine_version }}"
-    allow_major_version_upgrade: "{{ infrastructure_controller_db_allow_major_version_upgrade }}"
-    auto_minor_version_upgrade: "{{ infrastructure_controller_db_auto_minor_version_upgrade }}"
-    multi_az: "{{ infrastructure_controller_db_multi_az }}"
-    storage_encrypted: "{{ infrastructure_controller_db_storage_encrypted }}"
-    db_instance_class: "{{ infrastructure_controller_db_db_instance_class }}"
+    engine_version: "{{ infrastructure_db_engine_version }}"
+    allow_major_version_upgrade: "{{ infrastructure_db_allow_major_version_upgrade }}"
+    auto_minor_version_upgrade: "{{ infrastructure_db_auto_minor_version_upgrade }}"
+    multi_az: "{{ infrastructure_db_multi_az }}"
+    storage_encrypted: "{{ infrastructure_db_storage_encrypted }}"
+    db_instance_class: "{{ infrastructure_db_db_instance_class }}"
     username: "{{ infrastructure_db_username }}"
     password: "{{ infrastructure_db_password }}"
-    storage_type: "{{ infrastructure_controller_db_storage_type }}"
-    iops: "{{ infrastructure_controller_db_storage_iops | default(None) }}"
-    allocated_storage: "{{ infrastructure_controller_db_allocated_storage }}"
+    storage_type: "{{ infrastructure_db_storage_type }}"
+    iops: "{{ infrastructure_db_storage_iops | default(None) }}"
+    allocated_storage: "{{ infrastructure_db_allocated_storage }}"
     vpc_security_group_ids: 
       - "{{ infrastructure_security_group.group_id }}"
     db_subnet_group_name: "{{ infrastructure_db_subnet_group.subnet_group.name }}"
-    tags: "{{ controller_db_tags }}"
+    tags: "{{ db_tags }}"
   tags:
     - database
-  register: infrastructure_controller_db
-
-- name: Create Hub RDS instance
-  when: infrastructure_hub_instances > 0
-  vars:
-    hub_db_additional_tags:
-      Name: "aap-infrastructure-{{ deployment_id }}-hub-db"
-    hub_db_tags: "{{ hub_db_additional_tags | combine(_infrastructure_tags) }}"
-  amazon.aws.rds_instance:
-    region: "{{ infrastructure_region }}"
-    id: "aap-infrastructure-{{ deployment_id }}-hub-db"
-    state: present
-    engine: postgres
-    db_name: hub
-    engine_version: "{{ infrastructure_hub_db_engine_version }}"
-    allow_major_version_upgrade: "{{ infrastructure_hub_db_allow_major_version_upgrade }}"
-    auto_minor_version_upgrade: "{{ infrastructure_hub_db_auto_minor_version_upgrade }}"
-    multi_az: "{{ infrastructure_hub_db_multi_az }}"
-    storage_encrypted: "{{ infrastructure_hub_db_storage_encrypted }}"
-    db_instance_class: "{{ infrastructure_hub_db_db_instance_class }}"
-    username: "{{ infrastructure_db_username }}"
-    password: "{{ infrastructure_db_password }}"
-    storage_type: "{{ infrastructure_hub_db_storage_type }}"
-    iops: "{{ infrastructure_hub_db_storage_iops | default(None) }}"
-    allocated_storage: "{{ infrastructure_hub_db_allocated_storage }}"
-    vpc_security_group_ids: 
-      - "{{ infrastructure_security_group.group_id }}"
-    db_subnet_group_name: "{{ infrastructure_db_subnet_group.subnet_group.name }}"
-    tags: "{{ hub_db_tags }}"
-  tags:
-    - database
-  register: infrastructure_hub_db
-
-- name: Create EDA RDS instance
-  when: infrastructure_eda_instances > 0
-  vars:
-    eda_db_additional_tags:
-      Name: "aap-infrastructure-{{ deployment_id }}-eda-db"
-    eda_db_tags: "{{ eda_db_additional_tags | combine(_infrastructure_tags) }}"
-  amazon.aws.rds_instance:
-    region: "{{ infrastructure_region }}"
-    id: "aap-infrastructure-{{ deployment_id }}-eda-db"
-    state: present
-    engine: postgres
-    db_name: eda
-    engine_version: "{{ infrastructure_eda_db_engine_version }}"
-    allow_major_version_upgrade: "{{ infrastructure_eda_db_allow_major_version_upgrade }}"
-    auto_minor_version_upgrade: "{{ infrastructure_eda_db_auto_minor_version_upgrade }}"
-    multi_az: "{{ infrastructure_eda_db_multi_az }}"
-    storage_encrypted: "{{ infrastructure_eda_db_storage_encrypted }}"
-    db_instance_class: "{{ infrastructure_eda_db_db_instance_class }}"
-    username: "{{ infrastructure_db_username }}"
-    password: "{{ infrastructure_db_password }}"
-    storage_type: "{{ infrastructure_eda_db_storage_type }}"
-    iops: "{{ infrastructure_eda_db_storage_iops | default(None) }}"
-    allocated_storage: "{{ infrastructure_eda_db_allocated_storage }}"
-    vpc_security_group_ids: 
-      - "{{ infrastructure_security_group.group_id }}"
-    db_subnet_group_name: "{{ infrastructure_db_subnet_group.subnet_group.name }}"
-    tags: "{{ eda_db_tags }}"
-  tags:
-    - database
-  register: infrastructure_eda_db
-
-- name: Set DB stats
-  ansible.builtin.set_stats:
-    data:
-      infrastructure_controller_db_host: "{{ infrastructure_controller_db.endpoint.address }}"
-      infrastructure_hub_db_host: "{{ infrastructure_hub_db.endpoint.address | default(omit) }}"
-      infrastructure_eda_db_host: "{{ infrastructure_eda_db.endpoint.address | default(omit) }}"
-    per_host: false
-  tags:
-    - database
+  register: infrastructure_db

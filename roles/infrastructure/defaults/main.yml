@@ -55,32 +55,12 @@ infrastructure_eda_shape: m5a.xlarge
 infrastructure_db_username: ansible
 infrastructure_db_password: changeme
 
-infrastructure_controller_db_engine_version: "13.12"
-infrastructure_controller_db_allow_major_version_upgrade: false
-infrastructure_controller_db_auto_minor_version_upgrade: true
-infrastructure_controller_db_multi_az: false
-infrastructure_controller_db_storage_encrypted: true
-infrastructure_controller_db_db_instance_class: db.m5d.xlarge
-infrastructure_controller_db_storage_type: io1
-infrastructure_controller_db_storage_iops: 1500
-infrastructure_controller_db_allocated_storage: 100
-
-infrastructure_hub_db_engine_version: "13.12"
-infrastructure_hub_db_allow_major_version_upgrade: false
-infrastructure_hub_db_auto_minor_version_upgrade: true
-infrastructure_hub_db_multi_az: false
-infrastructure_hub_db_storage_encrypted: true
-infrastructure_hub_db_db_instance_class: db.m5d.large
-infrastructure_hub_db_storage_type: io1
-infrastructure_hub_db_storage_iops: 1500
-infrastructure_hub_db_allocated_storage: 100
-
-infrastructure_eda_db_engine_version: "13.12"
-infrastructure_eda_db_allow_major_version_upgrade: false
-infrastructure_eda_db_auto_minor_version_upgrade: true
-infrastructure_eda_db_multi_az: false
-infrastructure_eda_db_storage_encrypted: true
-infrastructure_eda_db_db_instance_class: db.m5d.xlarge
-infrastructure_eda_db_storage_type: io1
-infrastructure_eda_db_storage_iops: 1500
-infrastructure_eda_db_allocated_storage: 100
+infrastructure_db_engine_version: "13.12"
+infrastructure_db_allow_major_version_upgrade: false
+infrastructure_db_auto_minor_version_upgrade: true
+infrastructure_db_multi_az: false
+infrastructure_db_storage_encrypted: true
+infrastructure_db_db_instance_class: db.m5d.xlarge
+infrastructure_db_storage_type: io1
+infrastructure_db_storage_iops: 5000
+infrastructure_db_allocated_storage: 100

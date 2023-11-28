@@ -36,7 +36,7 @@ receptor_listener_port=27199
 
 automationhub_admin_password='{{ aap_admin_password }}'
 
-automationhub_pg_host='{{ aap_hub_db_host }}'
+automationhub_pg_host='{{ aap_controller_db_host }}'
 automationhub_pg_port=5432
 automationhub_pg_database='hub'
 automationhub_pg_username='{{ infrastructure_db_username }}'
@@ -47,7 +47,7 @@ automationedacontroller_admin_password='{{ aap_admin_password }}'
 
 automationedacontroller_allowed_hostnames='{{ aap_eda_allowed_hostnames }}'
 
-automationedacontroller_pg_host='{{ aap_eda_db_host }}'
+automationedacontroller_pg_host='{{ aap_controller_db_host }}'
 automationedacontroller_pg_port=5432
 automationedacontroller_pg_database='eda'
 automationedacontroller_pg_username='{{ infrastructure_db_username }}'
