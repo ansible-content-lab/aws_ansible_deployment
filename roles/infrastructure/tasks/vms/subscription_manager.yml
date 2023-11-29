@@ -1,0 +1,20 @@
+---
+- name: Register subscription manager
+  community.general.redhat_subscription:
+    state: present
+    username: "{{ aap_red_hat_username }}"
+    password: "{{ aap_red_hat_password }}"
+    auto_attach: true
+  tags:
+    - controller
+    - hub
+    - eda
+
+- name: Ensure rhsm is managing repos
+  ansible.builtin.command: sudo subscription-manager config --rhsm.manage_repos=1
+  register: rhsp
+  failed_when: rhsp.rc == 1
+  tags:
+    - controller
+    - hub
+    - eda
