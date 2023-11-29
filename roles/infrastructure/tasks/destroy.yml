@@ -14,20 +14,13 @@
     wait: true
   register: deleted_instances
 
-- name: Delete databases
-  ignore_errors: true
-  block:
-    - name: Delete databases
-      amazon.aws.rds_instance:
-        region: "{{ infrastructure_region }}"
-        state: absent
-        db_instance_identifier: "{{ item }}"
-        skip_final_snapshot: true
-      loop:
-        - "aap-infrastructure-{{ deployment_id }}-controller-db"
-        - "aap-infrastructure-{{ deployment_id }}-hub-db"
-        - "aap-infrastructure-{{ deployment_id }}-eda-db"
-      register: deleted_databases
+- name: Delete database
+  amazon.aws.rds_instance:
+    region: "{{ infrastructure_region }}"
+    state: absent
+    db_instance_identifier: "aap-infrastructure-{{ deployment_id }}-db"
+    skip_final_snapshot: true
+  register: deleted_databases
 
 - name: Delete db subnet group
   amazon.aws.rds_subnet_group:
