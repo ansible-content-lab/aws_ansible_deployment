@@ -1,0 +1,23 @@
+---
+- name: Create a database for Controller
+  community.postgresql.postgresql_db:
+    name: controller
+    login_host: "{{ aap_db_host }}"
+    login_user: "{{ infrastructure_db_username }}"
+    login_password: "{{ infrastructure_db_password }}"
+
+- name: Create a database for Hub
+  community.postgresql.postgresql_db:
+    name: hub
+    login_host: "{{ aap_db_host }}"
+    login_user: "{{ infrastructure_db_username }}"
+    login_password: "{{ infrastructure_db_password }}"
+  when: aap_hub_hosts | length > 0
+
+- name: Create a database for EDA
+  community.postgresql.postgresql_db:
+    name: eda
+    login_host: "{{ aap_db_host }}"
+    login_user: "{{ infrastructure_db_username }}"
+    login_password: "{{ infrastructure_db_password }}"
+  when: aap_eda_hosts | length > 0

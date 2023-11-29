@@ -15,6 +15,7 @@
   tags:
     - database
 
+# AWS will only let us create one DB in the RDS instance, so we will need to create databases for Hub and EDA in later steps.
 - name: Create RDS instance
   vars:
     db_additional_tags:
@@ -22,7 +23,7 @@
     db_tags: "{{ db_additional_tags | combine(_infrastructure_tags) }}"
   amazon.aws.rds_instance:
     region: "{{ infrastructure_region }}"
-    id: "aap-infrastructure-{{ deployment_id }}-controller-db"
+    id: "aap-infrastructure-{{ deployment_id }}-db"
     state: present
     engine: postgres
     db_name: controller

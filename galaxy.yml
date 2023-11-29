@@ -43,6 +43,7 @@ dependencies:
   ansible.utils: '>=2.11.0'
   community.aws: '>=6.3.0'
   community.general: '>=8.0.0'
+  community.postgresql: ">=3.2.0"
 
 # The URL of the originating SCM repository
 repository: https://github.com/ansible-content-lab/aws_deployment
