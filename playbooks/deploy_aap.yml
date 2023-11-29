@@ -57,15 +57,6 @@
     aap_eda_allowed_hostnames: "{{ (groups.eda_public | default([])) | join(',') }}"
     aap_db_host: "{{ hostvars.localhost.infrastructure_db.endpoint.address }}"
   tasks:
-    - name: Create the remaining application databases on the DB host
-      ansible.builtin.include_role:
-        name: lab.aws_deployment.aap
-        tasks_from: databases
-      tags:
-        - controller
-        - hub
-        - eda
-
     - name: Run AAP role
       ansible.builtin.include_role:
         name: lab.aws_deployment.aap
