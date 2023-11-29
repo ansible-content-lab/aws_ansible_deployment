@@ -1,0 +1,7 @@
+---
+release_summary: Update the deployment so that a single RDS instance is used for all AAP apps.
+minor_changes:
+  - Update DB logic to account for a single RDS instance
+  - Added PostgreSQL commands to account for the limit of one DB per-RDS instance in the AWS collection
+  - Moved subscription manager and dnf tasks from playbooks into role tasks
+  - Update precommit dependencies

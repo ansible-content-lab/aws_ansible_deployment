@@ -1,0 +1,19 @@
+---
+- name: Upgrade all packages
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+  tags:
+    - controller
+    - hub
+    - eda
+
+- name: Install required packages
+  ansible.builtin.dnf:
+    name:
+      - python3-psycopg2
+    state: latest
+  tags:
+    - controller
+    - hub
+    - eda

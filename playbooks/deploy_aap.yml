@@ -27,30 +27,19 @@
   gather_facts: true
   become: true
   tasks:
-    - name: Register subscription manager
-      community.general.redhat_subscription:
-        state: present
-        username: "{{ aap_red_hat_username }}"
-        password: "{{ aap_red_hat_password }}"
-        auto_attach: true
+    - name: Configure RHEL subscription manager
+      ansible.builtin.include_role:
+        name: lab.aws_deployment.infrastructure
+        tasks_from: vms/subscription_manager
       tags:
         - controller
         - hub
         - eda
 
-    - name: Ensure rhsm is managing repos
-      ansible.builtin.command: sudo subscription-manager config --rhsm.manage_repos=1
-      register: rhsp
-      failed_when: rhsp.rc == 1
-      tags:
-        - controller
-        - hub
-        - eda
-
-    - name: Upgrade all packages
-      ansible.builtin.dnf:
-        name: "*"
-        state: latest
+    - name: Manage RHEL packages
+      ansible.builtin.include_role:
+        name: lab.aws_deployment.infrastructure
+        tasks_from: vms/dnf
       tags:
         - controller
         - hub
@@ -66,9 +55,7 @@
     aap_hub_hosts: "{{ groups.hub_private | default('') }}"
     aap_eda_hosts: "{{ groups.eda_private | default('') }}"
     aap_eda_allowed_hostnames: "{{ (groups.eda_public | default([])) | join(',') }}"
-    aap_controller_db_host: "{{ hostvars.localhost.infrastructure_controller_db.endpoint.address }}"
-    aap_hub_db_host: "{{ hostvars.localhost.infrastructure_hub_db.endpoint.address | default('') }}"
-    aap_eda_db_host: "{{ hostvars.localhost.infrastructure_eda_db.endpoint.address | default('') }}"
+    aap_db_host: "{{ hostvars.localhost.infrastructure_db.endpoint.address }}"
   tasks:
     - name: Run AAP role
       ansible.builtin.include_role:
