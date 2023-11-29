@@ -70,3 +70,16 @@ releases:
     fragments:
     - license.yml
     release_date: '2023-11-16'
+  1.1.0:
+    changes:
+      minor_changes:
+      - Added PostgreSQL commands to account for the limit of one DB per-RDS instance
+        in the AWS collection
+      - Moved subscription manager and dnf tasks from playbooks into role tasks
+      - Update DB logic to account for a single RDS instance
+      - Update precommit dependencies
+      release_summary: Update the deployment so that a single RDS instance is used
+        for all AAP apps.
+    fragments:
+    - consolidatedb.yml
+    release_date: '2023-11-29'

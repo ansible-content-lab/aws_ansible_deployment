@@ -5,6 +5,22 @@ Aoc.Controller_Demo_Config Release Notes
 .. contents:: Topics
 
 
+v1.1.0
+======
+
+Release Summary
+---------------
+
+Update the deployment so that a single RDS instance is used for all AAP apps.
+
+Minor Changes
+-------------
+
+- Added PostgreSQL commands to account for the limit of one DB per-RDS instance in the AWS collection
+- Moved subscription manager and dnf tasks from playbooks into role tasks
+- Update DB logic to account for a single RDS instance
+- Update precommit dependencies
+
 v1.0.6
 ======
 
