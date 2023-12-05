@@ -9,7 +9,7 @@
         filters: "{{ infrastructure_ami_filter }}"
       register: infrastructure_vm_amis
       when: infrastructure_vm_ami is not defined
-    
+
     - name: Output RHEL AMI list
       ansible.builtin.debug:
         var: infrastructure_vm_amis
@@ -18,11 +18,11 @@
       ansible.builtin.set_fact:
         infrastructure_vm_ami: >-
           {{ (infrastructure_vm_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1].image_id }}
-      when: 
+      when:
         - infrastructure_vm_ami is not defined
         - infrastructure_vm_amis is defined
         - infrastructure_vm_amis.images | length > 0
-    
+
     - name: Debug selected AMI
       ansible.builtin.debug:
         var: infrastructure_vm_ami
@@ -52,7 +52,7 @@
 
 - name: Set Stats AMI
   ansible.builtin.set_stats:
-    data: 
+    data:
       controller_ami: "{{ infrastructure_controller_ami }}"
       hub_ami: "{{ infrastructure_hub_ami }}"
       eda_ami: "{{ infrastructure_eda_ami }}"
