@@ -1,13 +1,4 @@
 ---
-- name: Remove installer
-  ansible.builtin.file:
-    path: "{{ aap_installer_path }}"
-    state: absent
-  when:
-    - aap_run_installer
-    - aap_remove_installer_after_install
-    - install.rc != 1
-
 - name: Remove SSH key
   ansible.builtin.file:
     path: "{{ aap_installer_ssh_key_dest }}"

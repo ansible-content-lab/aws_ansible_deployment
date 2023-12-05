@@ -48,7 +48,7 @@
 - name: Install AAP
   hosts: installer
   gather_facts: false
-  become: false
+  become: true
   vars:
     aap_controller_hosts: "{{ groups.controller_private }}"
     aap_ee_hosts: "{{ groups.execution_private | default('') }}"

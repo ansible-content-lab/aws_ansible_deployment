@@ -1,6 +1,0 @@
----
-- name: Copy and unarchive inventory to install server
-  ansible.builtin.unarchive:
-    src: "{{ aap_installer_src_path }}"
-    dest: "{{ aap_installer_unarchive_path }}"
-    owner: ec2-user

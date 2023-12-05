@@ -1,0 +1,4 @@
+---
+release_summary: Deploy the AAP installer via subscription-manager and DNF
+minor_changes:
+  - Removed the need to provide the AAP installer by installing the installer via DNF.
