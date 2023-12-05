@@ -9,3 +9,4 @@
   ansible.builtin.template:
     src: inventory.j2
     dest: "{{ aap_installer_inventory_path }}"
+  become: true
