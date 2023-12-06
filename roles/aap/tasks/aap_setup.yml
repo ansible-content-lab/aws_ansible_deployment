@@ -4,7 +4,7 @@
     msg: "This process can take a long time to complete.  If you want to follow the logs of the installer, then SSH into the installer server and follow the setup.log file at `{{ aap_installer_path }}setup.log`."
 
 - name: Run the AAP install script
-  ansible.builtin.shell: "ANSIBLE_BECOME_METHOD='sudo' ANSIBLE_BECOME=True {{ aap_installer_path }}setup.sh -p {{ aap_installer_log_path }}"
+  ansible.builtin.shell: "ANSIBLE_BECOME_METHOD='sudo' ANSIBLE_BECOME=True {{ aap_installer_path }}setup.sh"
   register: install
   changed_when: install.rc != 1
   failed_when: install.rc == 1
