@@ -5,6 +5,20 @@ Aoc.Controller_Demo_Config Release Notes
 .. contents:: Topics
 
 
+v1.2.0
+======
+
+Release Summary
+---------------
+
+Deploy the AAP installer via subscription-manager and DNF
+
+Minor Changes
+-------------
+
+- Become sudo when running the installer tasks since logs and inventory will be in a root owned directory.
+- Removed the need to provide the AAP installer by installing the installer via DNF.
+
 v1.1.0
 ======
 

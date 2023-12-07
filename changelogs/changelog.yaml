@@ -1,80 +1,96 @@
----
 ancestor: null
 releases:
   1.0.0:
     changes:
       major_changes:
-        - Deploy the RPM-based Ansible Automation Platform installer via RHEL-based virtual machines on AWS.
+      - Deploy the RPM-based Ansible Automation Platform installer via RHEL-based
+        virtual machines on AWS.
       release_summary: Initial release
     fragments:
-      - initial.yaml
+    - initial.yaml
     release_date: '2023-11-06'
   1.0.1:
     changes:
       minor_changes:
-        - Added EDA server public IP address to the list of ALLOWED_HOSTS in EDA.
-        - Changed include role statements to use FQRN.
-        - Update task labels to be more descriptive.
-        - Update the installer unarchive process to avoid errors.
-        - Updated host group names for clarity.
+      - Added EDA server public IP address to the list of ALLOWED_HOSTS in EDA.
+      - Changed include role statements to use FQRN.
+      - Update task labels to be more descriptive.
+      - Update the installer unarchive process to avoid errors.
+      - Updated host group names for clarity.
       release_summary: Bug fixes and improvements.
     fragments:
-      - installer-improvements.yml
+    - installer-improvements.yml
     release_date: '2023-11-09'
   1.0.2:
     changes:
       minor_changes:
-        - Added a default for `aap_installer_ssh_key_dest` so that it is not required and will default to the ec2-user's ssh directory.
-        - Added ansible.cfg file with SSH args to keep connection open during AAP install.
-        - Added output steps to make it easier to find connection details after deployment.
-        - Updated README to add SSH info.
-        - Updated get existing VMs logic to make it more reusable.
+      - Added a default for `aap_installer_ssh_key_dest` so that it is not required
+        and will default to the ec2-user's ssh directory.
+      - Added ansible.cfg file with SSH args to keep connection open during AAP install.
+      - Added output steps to make it easier to find connection details after deployment.
+      - Updated README to add SSH info.
+      - Updated get existing VMs logic to make it more reusable.
       release_summary: Improvements to the install steps to improve experience.
     fragments:
-      - install-changes.yml
+    - install-changes.yml
     release_date: '2023-11-09'
   1.0.3:
     changes:
       minor_changes:
-        - Added variable to control removing SSH key from install server regardless of installer outcome.
-        - README updates.
+      - Added variable to control removing SSH key from install server regardless
+        of installer outcome.
+      - README updates.
       release_summary: General updates and bug fixes
     fragments:
-      - bugfixes2.yml
+    - bugfixes2.yml
     release_date: '2023-11-10'
   1.0.4:
     changes:
       minor_changes:
-        - Added Ansible tags where missing to infrastructure role.
-        - Updated AWS tagging to allow for user defined tags along with collection tag opinions.
+      - Added Ansible tags where missing to infrastructure role.
+      - Updated AWS tagging to allow for user defined tags along with collection tag
+        opinions.
       release_summary: Updates to tagging.
     fragments:
-      - tags.yml
+    - tags.yml
     release_date: '2023-11-14'
   1.0.5:
     changes:
       minor_changes:
-        - Prevent user defined tags from overwriting persistent tags.
+      - Prevent user defined tags from overwriting persistent tags.
       release_summary: Bug fixes
     fragments:
-      - bugfixes3.yml
+    - bugfixes3.yml
     release_date: '2023-11-15'
   1.0.6:
     changes:
       minor_changes:
-        - Change license to GPLv3.
+      - Change license to GPLv3.
       release_summary: Update the license to align with AAP
     fragments:
-      - license.yml
+    - license.yml
     release_date: '2023-11-16'
   1.1.0:
     changes:
       minor_changes:
-        - Added PostgreSQL commands to account for the limit of one DB per-RDS instance in the AWS collection
-        - Moved subscription manager and dnf tasks from playbooks into role tasks
-        - Update DB logic to account for a single RDS instance
-        - Update precommit dependencies
-      release_summary: Update the deployment so that a single RDS instance is used for all AAP apps.
+      - Added PostgreSQL commands to account for the limit of one DB per-RDS instance
+        in the AWS collection
+      - Moved subscription manager and dnf tasks from playbooks into role tasks
+      - Update DB logic to account for a single RDS instance
+      - Update precommit dependencies
+      release_summary: Update the deployment so that a single RDS instance is used
+        for all AAP apps.
     fragments:
-      - consolidatedb.yml
+    - consolidatedb.yml
     release_date: '2023-11-29'
+  1.2.0:
+    changes:
+      minor_changes:
+      - Become sudo when running the installer tasks since logs and inventory will
+        be in a root owned directory.
+      - Removed the need to provide the AAP installer by installing the installer
+        via DNF.
+      release_summary: Deploy the AAP installer via subscription-manager and DNF
+    fragments:
+    - use-installer.yml
+    release_date: '2023-12-07'
