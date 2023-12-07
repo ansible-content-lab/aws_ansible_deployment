@@ -70,7 +70,7 @@
   when: groups.installer is not defined
   ansible.builtin.add_host:
     groups:
-     - installer
+      - installer
     name: "{{ infrastructure_ec2_instance.instances[0].public_ip_address }}"
   tags:
     - controller

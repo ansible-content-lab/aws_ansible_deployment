@@ -15,7 +15,7 @@
 
 - name: Set deployment stat
   ansible.builtin.set_stats:
-    data: 
+    data:
       deployment_id: "{{ deployment_id }}"
     per_host: false
   tags:

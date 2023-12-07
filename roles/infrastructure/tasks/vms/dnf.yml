@@ -12,6 +12,7 @@
   ansible.builtin.dnf:
     name:
       - python3-psycopg2
+      - ansible-automation-platform-installer
     state: latest
   tags:
     - controller

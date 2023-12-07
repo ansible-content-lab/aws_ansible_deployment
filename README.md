@@ -58,9 +58,7 @@ It is recommended that you create a custom AMI that you may then use to deploy R
 
 ### Ansible Automation Platform Installer
 
-This collection expects that the most recent version of the [Ansible Automation Platform installer][aap-installer] is downloaded locally and can be moved to the deployment to install AAP.
-
-This collection expects the standard "setup" file, not the "bundle".  And, it is not yet tested with the containerized installer.
+This collection uses subscription manager to install the AAP installer onto the AWS virtual machines.
 
 ### Roles
 
@@ -75,18 +73,16 @@ This collection includes the following roles.  Each role has default variables a
 
 The following identifies the variables that you **must** set before running the deployment.  You may create a variable file that you can pass to the deployment playbook to set these variables.
 
-| Variable                              | Description                                                                                                               |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `infrastructure_region`               | The AWS region that the infrastructure will be deployed into.                                                             |
-| `infrastructure_db_username`          | The PostgreSQL admin username that will be used for databases.                                                            |
-| `infrastructure_db_password`          | The PostgreSQL admin password that will be used for databases.                                                            |
-| `aap_installer_src_path`              | The path to the AAP installer file (.tgz) on the local machine. This file will be uploaded to a VM during the deployment. |
-| `aap_installer_unarchive_folder_name` | The name of the root folder in the extracted installer file.  This will change from AAP version to version.               |
-| `aap_admin_password`                  | The admin password to create for Ansible Automation Platform applications.                                                |
-| `aap_installer_ssh_key`               | The name of the SSH key on the local machine that will be used to connect to the installer VM and other VMs deployed.     |
-| `aap_installer_ssh_key_src`           | The full path to the SSH key on the local machine.                                                                        |
-| `aap_red_hat_username`                | Your Red Hat account username that will be used to register RHEL instances with subscription manager.                     |
-| `aap_red_hat_password`                | Your Red Hat account password that will be used to register RHEL instances with subscription manager.                     |
+| Variable                     | Description                                                                                                           |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `infrastructure_region`      | The AWS region that the infrastructure will be deployed into.                                                         |
+| `infrastructure_db_username` | The PostgreSQL admin username that will be used for databases.                                                        |
+| `infrastructure_db_password` | The PostgreSQL admin password that will be used for databases.                                                        |
+| `aap_admin_password`         | The admin password to create for Ansible Automation Platform applications.                                            |
+| `aap_installer_ssh_key`      | The name of the SSH key on the local machine that will be used to connect to the installer VM and other VMs deployed. |
+| `aap_installer_ssh_key_src`  | The full path to the SSH key on the local machine.                                                                    |
+| `aap_red_hat_username`       | Your Red Hat account username that will be used to register RHEL instances with subscription manager.                 |
+| `aap_red_hat_password`       | Your Red Hat account password that will be used to register RHEL instances with subscription manager.                 |
 
 The following is an example of a variables file with required and optional fields that can be used to tailor a deployment.  This example uses a custom AMI that was created with [Image Builder][image-builder], it provides a certificate and values to create a load balancer in front of Automation Controller, and it will run the AAP installer once the infrastructure is configured.
 
@@ -123,9 +119,6 @@ infrastructure_create_controller_lb: true
 infrastructure_cert_path: /Users/scott/Downloads/cert.pem
 infrastructure_cert_key_path: /Users/scott/Downloads/key.pem
 infrastructure_cert_domain_name: controller.my.custom.domain
-
-aap_installer_src_path: ~/Downloads/ansible-automation-platform-setup-2.4-2.tar.gz
-aap_installer_unarchive_folder_name: ansible-automation-platform-setup-2.4-2
 
 aap_installer_ssh_key: aws_test_key
 aap_installer_ssh_key_src: "~/.ssh/{{ aap_installer_ssh_key }}"

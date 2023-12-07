@@ -1,0 +1,13 @@
+---
+include:
+  - changelogs
+  - docs
+  - meta
+  - playbooks
+  - plugins
+  - roles
+formatter:
+  type: basic
+  indent: 2
+  retain_line_breaks: true
+  include_document_start: true

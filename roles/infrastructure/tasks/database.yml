@@ -38,7 +38,7 @@
     storage_type: "{{ infrastructure_db_storage_type }}"
     iops: "{{ infrastructure_db_storage_iops | default(None) }}"
     allocated_storage: "{{ infrastructure_db_allocated_storage }}"
-    vpc_security_group_ids: 
+    vpc_security_group_ids:
       - "{{ infrastructure_security_group.group_id }}"
     db_subnet_group_name: "{{ infrastructure_db_subnet_group.subnet_group.name }}"
     tags: "{{ db_tags }}"

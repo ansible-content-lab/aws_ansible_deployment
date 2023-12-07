@@ -21,7 +21,7 @@
         or groups.installer | length == 0)
       ansible.builtin.add_host:
         groups:
-        - installer
+          - installer
         name: "{{ infrastructure_existing_vm.instances[0].public_ip_address }}"
       tags:
         - controller

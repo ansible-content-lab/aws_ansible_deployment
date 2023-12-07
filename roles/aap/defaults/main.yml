@@ -1,10 +1,9 @@
 ---
-aap_installer_unarchive_path: /home/ec2-user/
-aap_installer_unarchive_folder_name: ansible-automation-platform-setup-2.4-2
-aap_installer_path: "{{ aap_installer_unarchive_path }}{{ aap_installer_unarchive_folder_name }}/"
+aap_installer_home_dir: /home/ec2-user/
+aap_installer_path: /opt/ansible-automation-platform/installer/
+aap_installer_log_path: /tmp
 aap_installer_inventory_path: "{{ aap_installer_path }}inventory"
 aap_ssh_path: /home/ec2-user/.ssh/
 aap_installer_ssh_key_dest: "{{ aap_ssh_path }}{{ aap_installer_ssh_key }}"
 aap_run_installer: true
-aap_remove_installer_after_install: true
 aap_remove_ssh_key_from_install_server: true

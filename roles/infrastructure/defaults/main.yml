@@ -22,9 +22,10 @@ infrastructure_vpc_subnets:
 # Compute
 infrastructure_assign_public_ip: true
 infrastructure_delete_on_termination: true
+infrastructure_architecture: x86_64
 
 infrastructure_ami_filter:
-  architecture: x86_64
+  architecture: "{{ infrastructure_architecture }}"
   owner-id: "309956199498"
   name: "RHEL-9.2.*_HVM-*"
 
@@ -64,3 +65,7 @@ infrastructure_db_db_instance_class: db.m5d.xlarge
 infrastructure_db_storage_type: io1
 infrastructure_db_storage_iops: 5000
 infrastructure_db_allocated_storage: 100
+
+# RHEL
+infrastructure_aap_version: "2.4"
+infrastructure_rhel_version: "9"

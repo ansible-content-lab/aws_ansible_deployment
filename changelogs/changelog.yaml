@@ -83,3 +83,14 @@ releases:
     fragments:
     - consolidatedb.yml
     release_date: '2023-11-29'
+  1.2.0:
+    changes:
+      minor_changes:
+      - Become sudo when running the installer tasks since logs and inventory will
+        be in a root owned directory.
+      - Removed the need to provide the AAP installer by installing the installer
+        via DNF.
+      release_summary: Deploy the AAP installer via subscription-manager and DNF
+    fragments:
+    - use-installer.yml
+    release_date: '2023-12-07'

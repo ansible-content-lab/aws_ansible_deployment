@@ -18,3 +18,12 @@
     - controller
     - hub
     - eda
+
+- name: Enable the AAP installer repository
+  ansible.builtin.command: "sudo subscription-manager repos --enable ansible-automation-platform-{{ infrastructure_aap_version }}-for-rhel-{{ infrastructure_rhel_version }}-{{ infrastructure_architecture }}-rpms"
+  register: aap_installer_install
+  failed_when: aap_installer_install.rc == 1
+  tags:
+    - controller
+    - hub
+    - eda

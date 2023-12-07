@@ -3,8 +3,19 @@
   ansible.builtin.debug:
     msg: "This process can take a long time to complete.  If you want to follow the logs of the installer, then SSH into the installer server and follow the setup.log file at `{{ aap_installer_path }}setup.log`."
 
+- name: Touch the log file to ensure that `ec2-user` can write to it.
+  ansible.builtin.file:
+    path: "{{ aap_installer_path }}setup.log"
+    state: touch
+    owner: ec2-user
+    group: ec2-user
+  become: true
+
 - name: Run the AAP install script
-  ansible.builtin.shell: "ANSIBLE_BECOME_METHOD='sudo' ANSIBLE_BECOME=True {{ aap_installer_path }}setup.sh"
+  ansible.builtin.shell: "{{ aap_installer_path }}setup.sh"
+  environment:
+    ANSIBLE_BECOME_METHOD: sudo
+    ANSIBLE_BECOME: "True"
   register: install
   changed_when: install.rc != 1
   failed_when: install.rc == 1
