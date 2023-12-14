@@ -1,0 +1,4 @@
+---
+release_summary: Added the ability to create a cert for the load balancer as part of the automation.
+minor_changes:
+  - Added steps for certification creation for the LB.

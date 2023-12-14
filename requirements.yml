@@ -1,12 +1,8 @@
 ---
 collections:
   - name: amazon.aws
-    version: ">=6.5.0"
   - name: ansible.utils
-    version: ">=2.11.0"
   - name: community.aws
-    version: ">=6.3.0"
+  - name: community.crypto
   - name: community.general
-    version: ">=8.0.0"
   - name: community.postgresql
-    version: ">=3.2.0"
