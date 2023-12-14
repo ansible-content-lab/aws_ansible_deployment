@@ -116,8 +116,7 @@ infrastructure_db_username: ansible
 infrastructure_db_password: ansible_automation_platform_password
 
 infrastructure_create_controller_lb: true
-infrastructure_cert_path: /Users/scott/Downloads/cert.pem
-infrastructure_cert_key_path: /Users/scott/Downloads/key.pem
+infrastructure_cert_local_folder_path: /etc/ssl/
 infrastructure_cert_domain_name: controller.my.custom.domain
 
 aap_installer_ssh_key: aws_test_key

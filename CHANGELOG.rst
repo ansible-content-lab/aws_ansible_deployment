@@ -5,6 +5,19 @@ Aoc.Controller_Demo_Config Release Notes
 .. contents:: Topics
 
 
+v1.2.1
+======
+
+Release Summary
+---------------
+
+Added the ability to create a cert for the load balancer as part of the automation.
+
+Minor Changes
+-------------
+
+- Added steps for certification creation for the LB.
+
 v1.2.0
 ======
 

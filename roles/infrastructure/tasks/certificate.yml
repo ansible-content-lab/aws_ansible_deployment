@@ -1,0 +1,19 @@
+---
+- name: Generate a private key
+  community.crypto.openssl_privatekey:
+    path: "{{ cert_key_local_path }}"
+
+- name: Generate a CSR
+  community.crypto.openssl_csr:
+    path: "{{ cert_csr_local_path }}"
+    privatekey_path: "{{ cert_key_local_path }}"
+    common_name: "{{ cert_domain_name }}"
+  register: csr_results
+
+- name: Generate a certificate
+  community.crypto.x509_certificate:
+    path: "{{ cert_local_path }}"
+    privatekey_path: "{{ cert_key_local_path }}"
+    csr_path: "{{ cert_csr_local_path }}"
+    provider: selfsigned
+  register: certificate_results

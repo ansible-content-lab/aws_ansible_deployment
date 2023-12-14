@@ -133,14 +133,31 @@
       tags:
         - controller
 
+    - name: Set cert data if one will be created
+      when:
+        - infrastructure_create_controller_lb
+        - infrastructure_cert_path is not defined or infrastructure_cert_key_path is not defined or infrastructure_cert_csr_path is not defined
+        - infrastructure_cert_domain_name is defined
+      ansible.builtin.set_fact:
+        infrastructure_create_cert: true
+        infrastructure_cert_path: "{{ infrastructure_cert_local_folder_path }}{{ infrastructure_cert_domain_name }}.crt"
+        infrastructure_cert_key_path: "{{ infrastructure_cert_local_folder_path }}{{ infrastructure_cert_domain_name }}.pem"
+        infrastructure_cert_csr_path: "{{ infrastructure_cert_local_folder_path }}{{ infrastructure_cert_domain_name }}.csr"
+
+    - name: Create an SSL certificate
+      when:
+        - infrastructure_create_cert is defined
+        - infrastructure_create_cert
+      vars:
+        cert_local_path: "{{ infrastructure_cert_path }}"
+        cert_key_local_path: "{{ infrastructure_cert_key_path }}"
+        cert_csr_local_path: "{{ infrastructure_cert_csr_path }}"
+        cert_domain_name: "{{ infrastructure_cert_domain_name }}"
+      ansible.builtin.import_tasks: certificate.yml
+
     - name: Upload a certificate
       when:
         - infrastructure_create_controller_lb
-        - infrastructure_cert_path is defined
-        - infrastructure_cert_path | length > 0
-        - infrastructure_cert_key_path is defined
-        - infrastructure_cert_key_path | length > 0
-        - infrastructure_cert_domain_name is defined
       vars:
         vm_cert_additional_tags:
           Name: "aap-infrastructure-{{ deployment_id }}-cert"

@@ -94,3 +94,12 @@ releases:
     fragments:
     - use-installer.yml
     release_date: '2023-12-07'
+  1.2.1:
+    changes:
+      minor_changes:
+      - Added steps for certification creation for the LB.
+      release_summary: Added the ability to create a cert for the load balancer as
+        part of the automation.
+    fragments:
+    - cert.yml
+    release_date: '2023-12-14'
