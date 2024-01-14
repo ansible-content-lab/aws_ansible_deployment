@@ -36,7 +36,7 @@ These sections will describe required or recommended steps so that your Ansible 
 If you do not intend to make changes to the collection, then you can install directly from the `ansible-galaxy` CLI tool.  Examples in this readme will assume that you have done this.
 
 ```bash
-ansible-galaxy collection install git+https://github.com/ansible-content-lab/aws_deployment.git
+ansible-galaxy collection install git+https://github.com/ansible-content-lab/aws_ansible_deployment.git
 ```
 
 You may also download the collection from GitHub and modify to suit your needs.
