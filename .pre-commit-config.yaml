@@ -1,15 +1,15 @@
 ---
 repos:
   - repo: https://github.com/ansible-community/ansible-lint.git
-    rev: v6.22.0
+    rev: v24.2.0
     hooks:
       - id: ansible-lint
   - repo: https://github.com/igorshubovych/markdownlint-cli.git
-    rev: v0.37.0
+    rev: v0.39.0
     hooks:
       - id: markdownlint
   - repo: https://github.com/ansible-community/antsibull-changelog.git
-    rev: 0.23.0 # this will change when the next release of antsible includes the pre-commit hooks
+    rev: 0.25.0 # this will change when the next release of antsible includes the pre-commit hooks
     hooks:
       - id: antsibull-changelog-lint
       - id: antsibull-changelog-lint-changelog-yaml
