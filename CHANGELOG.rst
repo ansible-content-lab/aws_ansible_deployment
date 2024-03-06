@@ -5,6 +5,20 @@ Aoc.Controller_Demo_Config Release Notes
 .. contents:: Topics
 
 
+v1.2.2
+======
+
+Release Summary
+---------------
+
+Maintenance release
+
+Minor Changes
+-------------
+
+- Added a `requirements.txt` file for python deps.
+- Bumped versions of pre-commit checks.
+
 v1.2.1
 ======
 
