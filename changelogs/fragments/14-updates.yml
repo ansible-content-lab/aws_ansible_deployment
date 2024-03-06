@@ -1,5 +1,0 @@
----
-release_summary: Maintenance release
-minor_changes:
-  - Added a `requirements.txt` file for python deps.
-  - Bumped versions of pre-commit checks.
